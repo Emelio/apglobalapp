@@ -1,4 +1,4 @@
-package com.example.apglobal;
+package com.apglobal.apglobal;
 
 import android.os.Bundle;
 import io.flutter.app.FlutterActivity;
