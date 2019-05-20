@@ -1,6 +1,7 @@
 
 import 'package:apglobal/service/communicator.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'home.dart';
 
@@ -8,6 +9,14 @@ class MyApp extends StatelessWidget {
 
   var emailController = TextEditingController();
   var passwordController = TextEditingController();
+
+  MyApp(){
+    SharedPreferences.getInstance().then((result){
+      if (result.getString('token') != null) {
+        runApp(Home());
+      }
+    });
+  }
 
   textFieldWidget(String label, bool secure, TextEditingController controller){
     return Container(
