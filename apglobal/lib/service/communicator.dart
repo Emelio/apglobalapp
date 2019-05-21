@@ -1,3 +1,4 @@
+
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -16,8 +17,30 @@ class Communicator {
     }else{
       return false;
     }
+  }
 
+  static Future<dynamic> getDevice(String userId) async {
 
-    
+    String url = "localhost:5000/api/command/getDevice/$userId";
+
+    SharedPreferences pre = await SharedPreferences.getInstance(); 
+    String token = pre.getString('token');
+
+    intercept(token);
+
+      Response response = await Dio().get(url); 
+      return response.data;
+
+  }
+
+  static intercept(String token){
+    Dio().interceptors.add(InterceptorsWrapper(
+    onRequest:(Options options) async{
+        //...If no token, request token firstly.
+        //Set the token to headers 
+        options.headers["token"] = token;
+        return options; //continue   
+    }
+));
   }
 }
