@@ -23,6 +23,7 @@ dependencies:
   http: ^0.12.0+2
   shared_preferences: ^0.5.2
   sms: ^0.2.4
+  loading: ^1.0.0
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

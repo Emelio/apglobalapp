@@ -1,6 +1,7 @@
 
 import 'dart:convert';
 
+import 'package:apglobal/screens/loading.dart';
 import 'package:apglobal/service/communicator.dart';
 import 'package:flutter/material.dart';
 import "dart:ui" as ui;
@@ -15,9 +16,10 @@ class Home extends StatefulWidget {
 }
 
 class Homestate extends State<Home> {
-
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
   String brand; 
   double deviceNumber;
+  String arm; 
 
   Homestate(){
 
@@ -40,6 +42,7 @@ class Homestate extends State<Home> {
     setState(() {
        brand = _device['brand'] + " " + _device['model'] + " " + _device['year']; 
        deviceNumber = _device['device'];
+       arm = _device['status']['arm'];
     });
   }
 
@@ -86,6 +89,7 @@ class Homestate extends State<Home> {
     // TODO: implement build
     return MaterialApp(
       home: Scaffold(
+        key: _scaffoldKey, 
         body: Stack(
           children: <Widget>[
             Container(
@@ -149,15 +153,39 @@ class Homestate extends State<Home> {
                                 SmsQuery query = new SmsQuery();
                                 SmsSender sender = new SmsSender();
                                 String address = "$deviceNumber";
-                                SmsMessage message = new SmsMessage(address, 'arm123456'); 
+                                SmsMessage message; 
+                                if (arm == "on") {
+                                  message = new SmsMessage(address, 'arm123456');
+                                }else if(arm == "off"){
+                                  message = new SmsMessage(address, 'disarm123456'); 
+                                }else{
+                                  message = new SmsMessage(address, 'disarm123456'); 
+                                }
+                                
                                 message.onStateChanged.listen((state) {
+                                  print(state);
                                   if (state == SmsMessageState.Sent) {
                                     print("SMS is sent!");
+                                    runApp(LoadingScreenExample());
                                   } else if (state == SmsMessageState.Delivered) {
                                     print("SMS is delivered!");
+                                  }else if(state == SmsMessageState.Fail){
+                                    final snackBar = SnackBar(
+                                      content: Text('Unable to contact device, please ensure you have credit on the phone'),
+                                      action: SnackBarAction(
+                                        label: 'Undo',
+                                        onPressed: () {
+                                          // Some code to undo the change!
+                                        },
+                                      ),
+                                    );
+
+                                    // Find the Scaffold in the Widget tree and use it to show a SnackBar!
+                                    _scaffoldKey.currentState.showSnackBar(snackBar);
                                   }
                                 });
                                 sender.sendSms(message);
+    
                               },),
                               Padding(
                                 padding: EdgeInsets.only(top: 20),
