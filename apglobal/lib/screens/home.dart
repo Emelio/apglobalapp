@@ -7,6 +7,7 @@ import "dart:ui" as ui;
 
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sms/sms.dart';
 
 class Home extends StatefulWidget {
   
@@ -15,10 +16,14 @@ class Home extends StatefulWidget {
 
 class Homestate extends State<Home> {
 
+  String brand; 
+  double deviceNumber;
+
   Homestate(){
 
     getDevice();
   }
+
 
   getDevice() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
@@ -26,12 +31,15 @@ class Homestate extends State<Home> {
     List<String> tokens = token.split('.');
     Map<String, dynamic> map = json.decode(decodeBase64(tokens[1])); 
     String userId = map['nameid']; 
+    
+    await Communicator.getDevice(userId);
 
-    var device = await Communicator.getDevice(userId);
-    print(userId);
+    var device = pref.getString('device');
+    var _device = json.decode(device);
 
     setState(() {
-      
+       brand = _device['brand'] + " " + _device['model'] + " " + _device['year']; 
+       deviceNumber = _device['device'];
     });
   }
 
@@ -87,6 +95,7 @@ class Homestate extends State<Home> {
               ),
             ),
             Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 heading(),
                 Container(
@@ -95,17 +104,16 @@ class Homestate extends State<Home> {
                     children: <Widget>[
                       Padding(
                         padding: EdgeInsets.symmetric(vertical: 10, horizontal: 0),
-                        child: Text('Toyota Probox 2012', style: TextStyle(color: Colors.white, fontSize: 25, fontWeight: FontWeight.bold),),
+                        child: Text('$brand', style: TextStyle(color: Colors.white, fontSize: 25, fontWeight: FontWeight.bold),),
                       ),
-                      Text('now at:', style: TextStyle(color: Colors.white)),
+                      Text('Last recorded location:', style: TextStyle(color: Colors.white)),
                       Text('no data',style: TextStyle(color: Colors.white)),
                     ],
                   ),
                 ),
 
                 Container(
-                  margin: EdgeInsets.symmetric(horizontal: 80, vertical: 40),
-                  child: Image(image: ExactAssetImage('image/car_outline.png'), height: 180,),
+                  child: Image(image: ExactAssetImage('image/car_outline.png'), width: 200,),
                 ),
 
                 Expanded(
@@ -117,7 +125,7 @@ class Homestate extends State<Home> {
                         child: Container(
                           padding: EdgeInsets.all(0),
                           height: 150,
-                          width: 600,
+                          width: 450,
                           decoration: BoxDecoration(
                             image: DecorationImage(image: ExactAssetImage('image/controls.png'),
                                 fit: BoxFit.contain),
@@ -129,15 +137,28 @@ class Homestate extends State<Home> {
                     Positioned(child: Align( alignment: FractionalOffset.bottomCenter, 
                     child: Container(
                       height: 150,
-                      width: 350,
-                      padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+                      width: 450,
+                      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 14),
                       child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
                           Column(
                             children: <Widget>[
                               
-                              IconButton(icon: Icon(Icons.lock_outline, color: Colors.white,), iconSize: 35, onPressed: (){},),
+                              IconButton(icon: Icon(Icons.lock_outline, color: Colors.white,), iconSize: 35, onPressed: (){
+                                SmsQuery query = new SmsQuery();
+                                SmsSender sender = new SmsSender();
+                                String address = "$deviceNumber";
+                                SmsMessage message = new SmsMessage(address, 'arm123456'); 
+                                message.onStateChanged.listen((state) {
+                                  if (state == SmsMessageState.Sent) {
+                                    print("SMS is sent!");
+                                  } else if (state == SmsMessageState.Delivered) {
+                                    print("SMS is delivered!");
+                                  }
+                                });
+                                sender.sendSms(message);
+                              },),
                               Padding(
                                 padding: EdgeInsets.only(top: 20),
                                 child: IconButton(icon: Icon(Icons.speaker, color: Colors.white), iconSize: 35, onPressed: (){},),

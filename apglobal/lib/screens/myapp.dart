@@ -71,7 +71,7 @@ class MyApp extends StatelessWidget {
                     child: FlatButton(onPressed: () {
 
                     Communicator.login(emailController.text, passwordController.text).then((result){
-
+print(result);
                       if (result == true){
                         runApp(Home());
                       }

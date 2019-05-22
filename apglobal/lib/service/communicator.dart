@@ -1,5 +1,8 @@
 
-import 'package:dio/dio.dart';
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Communicator {
@@ -7,12 +10,13 @@ class Communicator {
   static Future<bool> login(String email, String password) async {
     String url = 'https://apgloballimited.com/api/users/login';
 
-    Response response = await Dio().post(url, data: {'Email': email, 'Password': password});
+    http.Response response = await http.post(url, body: json.encode({'Email': email, 'Password': password}), headers:  {"Content-Type": "application/json"}); 
+    var jsonbody = json.decode(response.body);
 
     SharedPreferences pref = await SharedPreferences.getInstance();
-    pref.setString('token', response.data['token'].toString());
-
-    if (response.data['token'] != null){
+    pref.setString('token', jsonbody['token']);
+  
+    if (jsonbody['token'] != null){
       return true;
     }else{
       return false;
@@ -21,26 +25,24 @@ class Communicator {
 
   static Future<dynamic> getDevice(String userId) async {
 
-    String url = "localhost:5000/api/command/getDevice/$userId";
+    String url = "https://apgloballimited.com/api/command/getDevice/$userId";
 
     SharedPreferences pre = await SharedPreferences.getInstance(); 
     String token = pre.getString('token');
 
-    intercept(token);
+    try {
+      http.Response response = await http.get(url, headers: {HttpHeaders.authorizationHeader: "Bearer $token"},); 
+      print(response.body);
+      SharedPreferences pref = await SharedPreferences.getInstance(); 
+      pref.setString('device', response.body);
 
-      Response response = await Dio().get(url); 
-      return response.data;
 
-  }
-
-  static intercept(String token){
-    Dio().interceptors.add(InterceptorsWrapper(
-    onRequest:(Options options) async{
-        //...If no token, request token firstly.
-        //Set the token to headers 
-        options.headers["token"] = token;
-        return options; //continue   
+      return response.body;
+    } catch (e) {
+      print("test: $e");
     }
-));
+    
+
   }
+
 }
