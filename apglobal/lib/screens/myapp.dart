@@ -1,4 +1,5 @@
 
+import 'package:apglobal/screens/password.dart';
 import 'package:apglobal/service/communicator.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -45,6 +46,10 @@ class MyApp extends StatelessWidget {
     );
   }
 
+  requestPassword() {
+    runApp(Password());
+  }
+
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
@@ -77,12 +82,14 @@ print(result);
                       }
 
                     });
-
-
                     }, child: Text('Sign In'),
                       color: Colors.blueAccent, textColor: Colors.white,
                       padding: EdgeInsets.symmetric(vertical: 13,horizontal: 60),
                     ),
+                  ), 
+                  GestureDetector(
+                    onTap: () => runApp(Password()),
+                    child: Text("Request new password", style: TextStyle(color: Colors.white, fontSize: 15),),
                   )
                 ],
               ),

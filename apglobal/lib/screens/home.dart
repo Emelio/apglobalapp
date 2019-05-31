@@ -9,6 +9,9 @@ import "dart:ui" as ui;
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sms/sms.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+import 'myapp.dart';
 
 class Home extends StatefulWidget {
   
@@ -18,12 +21,23 @@ class Home extends StatefulWidget {
 class Homestate extends State<Home> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   String brand; 
-  double deviceNumber;
-  String arm; 
+  double deviceNumber = 123;
+  String arm, monitor, power; 
+  
 
   Homestate(){
 
     getDevice();
+
+    if(monitor == "on"){
+      SmsSender sender = new SmsSender();
+      String address = "$deviceNumber";
+      SmsMessage message = new SmsMessage(address, 'tracker123456');
+      sender.sendSms(message);
+
+      Communicator.updateStatus("monitor", "off");
+
+    }
   }
 
 
@@ -38,12 +52,25 @@ class Homestate extends State<Home> {
 
     var device = pref.getString('device');
     var _device = json.decode(device);
+    var monitorCheck;
+
 
     setState(() {
        brand = _device['brand'] + " " + _device['model'] + " " + _device['year']; 
        deviceNumber = _device['device'];
        arm = _device['status']['arm'];
+      monitor = _device['status']['monitor'];
+      power = _device['status']['power']; 
     });
+  }
+
+  _launchURL() async {
+    var url = 'tel:'+ deviceNumber.toStringAsFixed(0);
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 
   decodeBase64(String base) {
@@ -51,6 +78,20 @@ class Homestate extends State<Home> {
     var bytes = base64.decode(base);
     var base64Str = utf8.decode(bytes);
     return base64Str;
+  }
+
+  Widget armStatus(String arm) {
+
+    if (arm == 'on') {
+      
+      return Container(
+                  child: Image(image: ExactAssetImage('image/car_outline.png'), width: 200,),
+                );
+    }else{
+      return Container(
+                  child: Image(image: ExactAssetImage('image/car_outline2.png'), width: 200,),
+                );
+    }
   }
 
   heading() {
@@ -64,12 +105,7 @@ class Homestate extends State<Home> {
                       icon: Icon(Icons.more_vert, color: Colors.white,),
                     ),
                     Text('Dashboard', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),),
-                    IconButton(
-                      onPressed: (){
-
-                      },
-                      icon: Icon(Icons.map, color: Colors.white,),
-                    )
+                    
 
                   ],
                 );
@@ -89,6 +125,38 @@ class Homestate extends State<Home> {
     // TODO: implement build
     return MaterialApp(
       home: Scaffold(
+        appBar: AppBar(centerTitle: true, title: Text("Dashboard"), backgroundColor: Color(0xFF3a94bf), actions: <Widget>[
+          IconButton(
+                      onPressed: (){
+
+                      },
+                      icon: Icon(Icons.map, color: Colors.white,),
+                    )
+        ],),
+        drawer: SizedBox(
+          width: s.width * 0.65,
+          child:  Drawer(
+          child: ListView(
+            children: <Widget>[
+              DrawerHeader(
+        child: Text('Drawer Header'),
+        decoration: BoxDecoration(
+          color: Colors.blue,
+        ),
+      ),
+      ListTile(
+        title: Text('Logout'),
+        onTap: () {
+          SharedPreferences.getInstance().then((result) {
+            result.remove('token');
+            runApp(MyApp());
+          });
+        },
+      ),
+            ],
+          ),
+        ),
+        ),
         key: _scaffoldKey, 
         body: Stack(
           children: <Widget>[
@@ -101,7 +169,6 @@ class Homestate extends State<Home> {
             Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                heading(),
                 Container(
                   margin: EdgeInsets.symmetric(vertical: 50, horizontal: 0),
                   child: Column(
@@ -116,9 +183,7 @@ class Homestate extends State<Home> {
                   ),
                 ),
 
-                Container(
-                  child: Image(image: ExactAssetImage('image/car_outline.png'), width: 200,),
-                ),
+                armStatus(arm),
 
                 Expanded(
                   child: Stack( 
@@ -128,8 +193,8 @@ class Homestate extends State<Home> {
                         alignment: FractionalOffset.bottomCenter,
                         child: Container(
                           padding: EdgeInsets.all(0),
-                          height: 150,
-                          width: 450,
+                          height: 170,
+                          width: 400,
                           decoration: BoxDecoration(
                             image: DecorationImage(image: ExactAssetImage('image/controls.png'),
                                 fit: BoxFit.contain),
@@ -140,9 +205,9 @@ class Homestate extends State<Home> {
 
                     Positioned(child: Align( alignment: FractionalOffset.bottomCenter, 
                     child: Container(
-                      height: 150,
-                      width: 450,
-                      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                      height: 170,
+                      width: 380,
+                      padding: EdgeInsets.only(left: 25, right: 25, top: 23),
                       child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
@@ -163,7 +228,7 @@ class Homestate extends State<Home> {
                                 }
                                 
                                 message.onStateChanged.listen((state) {
-                                  print(state);
+
                                   if (state == SmsMessageState.Sent) {
                                     print("SMS is sent!");
                                     runApp(LoadingScreenExample());
@@ -188,21 +253,103 @@ class Homestate extends State<Home> {
     
                               },),
                               Padding(
-                                padding: EdgeInsets.only(top: 20),
-                                child: IconButton(icon: Icon(Icons.speaker, color: Colors.white), iconSize: 35, onPressed: (){},),
+                                padding: EdgeInsets.only(top: 30),
+                                child: IconButton(icon: Icon(Icons.speaker, color: Colors.white), iconSize: 35, onPressed: (){
+                                  SmsQuery query = new SmsQuery();
+                                  SmsSender sender = new SmsSender();
+                                  String address = "$deviceNumber";
+                                  SmsMessage message;
+
+                                  
+
+                                  if (monitor == "off") {
+                                    // send message to turn monitor on and iniate call
+                                    message = new SmsMessage(address, 'monitor123456');
+
+                                    message.onStateChanged.listen((state){
+
+
+                                      if (state == SmsMessageState.Sent) {
+
+                                        Communicator.updateStatus("monitor", "on");
+                                        
+                                        _launchURL();
+
+                                      }else if(state == SmsMessageState.Fail){
+                                         final snackBar = SnackBar(
+                                          content: Text('Unable to contact device, please ensure you have credit on the phone'),
+                                          action: SnackBarAction(
+                                            label: 'Undo',
+                                            onPressed: () {
+                                              // Some code to undo the change!
+                                            },
+                                          ),
+                                        );
+
+                                        // Find the Scaffold in the Widget tree and use it to show a SnackBar!
+                                        _scaffoldKey.currentState.showSnackBar(snackBar);
+                                      }
+                                      
+                                      });   
+
+                                      sender.sendSms(message);                         
+
+                                  }else{
+                                    // turn off monitor  
+                                    message = new SmsMessage(address, 'tracker123456');
+                                  }
+
+
+                                },),
                               ),
                             ],
                           ),
                           Column( 
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: <Widget>[
-                            IconButton(icon: Icon(Icons.power_settings_new,  color: Colors.white), onPressed: (){}, iconSize: 105,)
+                            IconButton(icon: Icon(Icons.power_settings_new,  color: Colors.white), onPressed: (){
+                              SmsQuery query = new SmsQuery();
+                                SmsSender sender = new SmsSender();
+                                String address = "$deviceNumber";
+                                SmsMessage message; 
+                                if (power == "on") {
+                                  message = new SmsMessage(address, 'arm123456');
+                                }else if(arm == "off"){
+                                  message = new SmsMessage(address, 'disarm123456'); 
+                                }else{
+                                  message = new SmsMessage(address, 'disarm123456'); 
+                                }
+                                
+                                message.onStateChanged.listen((state) {
+
+                                  if (state == SmsMessageState.Sent) {
+                                    print("SMS is sent!");
+                                    runApp(LoadingScreenExample());
+                                  } else if (state == SmsMessageState.Delivered) {
+                                    print("SMS is delivered!");
+                                  }else if(state == SmsMessageState.Fail){
+                                    final snackBar = SnackBar(
+                                      content: Text('Unable to contact device, please ensure you have credit on the phone'),
+                                      action: SnackBarAction(
+                                        label: 'Undo',
+                                        onPressed: () {
+                                          // Some code to undo the change!
+                                        },
+                                      ),
+                                    );
+
+                                    // Find the Scaffold in the Widget tree and use it to show a SnackBar!
+                                    _scaffoldKey.currentState.showSnackBar(snackBar);
+                                  }
+                                });
+                                sender.sendSms(message);
+                            }, iconSize: 115,)
                           ],),
                           Column(
                             children: <Widget>[
                               IconButton(icon: Icon(Icons.tram, color: Colors.white), onPressed: (){}, iconSize: 35,),
                               Padding(
-                                padding: EdgeInsets.only(top: 20),
+                                padding: EdgeInsets.only(top: 35, right: 15),
                                 child: Text('1hr', style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Colors.white),),
                               ),
                             ],
