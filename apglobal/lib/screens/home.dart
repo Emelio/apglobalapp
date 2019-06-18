@@ -145,7 +145,16 @@ class Homestate extends State<Home> {
         ),
       ),
       ListTile(
-        title: Text('Logout'),
+        title: Row(children: <Widget>[ Padding(padding: EdgeInsets.only(right: 15), child: Icon(Icons.devices),),Text('Switch Device')],),
+        onTap: () {
+          SharedPreferences.getInstance().then((result) {
+            result.remove('token');
+            runApp(MyApp());
+          });
+        },
+      ),
+      ListTile(
+        title: Row(children: <Widget>[ Padding(padding: EdgeInsets.only(right: 15), child: Icon(Icons.security),),Text('Logout')],),
         onTap: () {
           SharedPreferences.getInstance().then((result) {
             result.remove('token');

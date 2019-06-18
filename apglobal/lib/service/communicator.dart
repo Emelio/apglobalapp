@@ -73,13 +73,56 @@ class Communicator {
 
   static Future<String> resetPassword(String email) async {
 
-    String url = "https://apgloballimited.com/api/command/resetPassword/$email";
+    String url = "https://apgloballimited.com/api/users/resetpassword/$email/0";
+
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    pref.setString('email', email);
 
     http.Response response = await http.get(url);
 
     print(response.statusCode);
 
     return response.body; 
+  }
+
+  static Future<Map<String, dynamic>> updatePassword(String password) async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String email = pref.getString('email');
+    String code = pref.getString('code');
+
+    var base = base64String(email+":"+code);
+
+    String url = 'https://apgloballimited.com/api/users/updatePassword/$password/$base';
+
+    http.Response response = await http.get(url);
+
+    print(response.body);
+
+    Map<String, dynamic> map = json.decode(response.body);
+
+    return map; 
+    
+  }
+
+  static Future<String> checkVerificationCode(String code) async {
+
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String email = pref.getString('email');
+    pref.setString('code', code);
+
+  
+    String url = 'https://apgloballimited.com/api/users/resetpassword/$email/$code';
+    http.Response response = await http.get(url);
+    
+    print(response.body);
+
+    return response.body;
+  }
+
+  static base64String(String string){
+    var bytes = utf8.encode(string);
+    var base64Str = base64.encode(bytes);
+    return base64Str; 
   }
 
 }

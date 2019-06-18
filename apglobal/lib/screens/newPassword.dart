@@ -1,9 +1,14 @@
 
+import 'package:apglobal/service/communicator.dart';
 import 'package:flutter/material.dart';
 
-class Code extends StatelessWidget {
+import 'myapp.dart';
 
-  TextEditingController code = new TextEditingController();
+class ResetPassword extends StatelessWidget {
+
+
+  TextEditingController password = new TextEditingController();
+
 
   textFieldWidget(String label, bool secure, TextEditingController controller){
     return Container(
@@ -32,41 +37,42 @@ class Code extends StatelessWidget {
     );
   }
 
-
   @override
   Widget build(BuildContext context) {
+    final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+
     // TODO: implement build
     return MaterialApp(
       home: Scaffold(
-        appBar: AppBar(title: Text("Reset Password"), centerTitle: true, ),
-        body: Container(
-          child: Column(
-            children: <Widget>[
-              Padding(
+      key: _scaffoldKey,
+      appBar: AppBar(
+        title: Text('Reset Password'),
+        centerTitle: true,
+      ),
+      body: Container(
+        child: Column(
+          children: <Widget>[
+            Padding(
                 padding: EdgeInsets.all(10),
-                child: Text("Enter your email address on file"),
+                child: Text("Enter your new password"),
               ), 
-              textFieldWidget("Access Code", false, code),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: <Widget>[
-                  RaisedButton(
-                    onPressed: (){
-                     
-                     },
-                    child: Text("Reset Password"),
-                  ),
-                  RaisedButton(
-                    onPressed: (){},
-                    child: Text("I have a code"),
-                  )
-                ],
+              textFieldWidget("New Password", true, password),
+              RaisedButton(
+                child: Text("Update"),
+                onPressed: (){
+                  Communicator.updatePassword(password.text).then((result) {
+                    if (result['isAcknowledged'] == true) {
+                      runApp(MyApp());
+                    }
+                  });
+                },
               )
-            ],
-          ),
+          ],
         ),
       ),
+    ),
     );
   }
+
 
 }
