@@ -9,6 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sms/sms.dart';
 
 import 'home.dart';
+import 'map.dart';
 
 class LoadingScreenExample extends StatefulWidget {
   @override
@@ -35,6 +36,40 @@ class LoadingScreenExampleState extends State<LoadingScreenExample> {
           Communicator.updateStatus("arm", "off");
           runApp(Home());
           
+        }else if(msg.body.contains('lat')) {
+
+          Map<String, dynamic> map = new Map(); 
+          String message = msg.body;
+          List<String> members = message.split("\n"); 
+
+          for (var item in members) {
+            List<String> cord = item.split(":");
+
+            switch (cord[0]) {
+              case 'lat':
+                map['Lat'] = cord[1];
+                break;
+
+              case 'long':
+                map['Longi'] = cord[1];
+                break;
+
+              case 'speed':
+                map['Speed'] = cord[1];
+                break;  
+                
+              default:
+            }
+
+          }
+
+          map['Time'] = new DateTime.now().toString();
+
+          print(map);
+
+          Communicator.addTracking(map);
+
+          runApp(Maps());
         }
         
       }else{
@@ -52,7 +87,7 @@ class LoadingScreenExampleState extends State<LoadingScreenExample> {
 
     setState(() {
 
-      devicePhone = _device['device'];
+      devicePhone = _device[0]['device'];
 
     });
   }

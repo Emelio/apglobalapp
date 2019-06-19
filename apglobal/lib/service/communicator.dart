@@ -23,6 +23,34 @@ class Communicator {
     }
   }
 
+  static Future<String> addTracking(Map<String, dynamic> data) async {
+    String url = 'https://apgloballimited.com/api/command/addTracking';
+
+    SharedPreferences pre = await SharedPreferences.getInstance(); 
+    String token = pre.getString('token');
+
+    var jsonData = json.encode(data);
+
+    http.Response response = await http.post(url, body: jsonData, headers: {HttpHeaders.authorizationHeader: "Bearer $token", "Content-Type": "application/json"});
+
+    print(response.body);
+    print(response.statusCode);
+    return response.body;
+  } 
+
+  static Future<Map<String, dynamic>> getTracking() async {
+
+    SharedPreferences pre = await SharedPreferences.getInstance(); 
+    String token = pre.getString('token');
+    String url = 'https://apgloballimited.com/api/command/getTracking';
+
+    http.Response response = await http.get(url, headers: {HttpHeaders.authorizationHeader: "Bearer $token"}); 
+
+    var data = json.decode(response.body);
+    return data;
+    
+  }
+
   static Future<dynamic> getDevice(String userId) async {
 
     String url = "https://apgloballimited.com/api/command/getDevice/$userId";
@@ -44,6 +72,18 @@ class Communicator {
     } catch (e) {
       print("test: $e");
     }   
+  }
+
+  static Future<dynamic> getDeviceList() async {
+    String url = "https://apgloballimited.com/api/command/getListOfDevices";
+
+    SharedPreferences pre = await SharedPreferences.getInstance(); 
+    String token = pre.getString('token');
+
+    http.Response response = await http.get(url, headers: {HttpHeaders.authorizationHeader: "Bearer $token"},);
+
+    var jsonData = json.decode(response.body);
+    return jsonData;
   }
 
   static Future<dynamic> updateStatus(String status, String state) async {
