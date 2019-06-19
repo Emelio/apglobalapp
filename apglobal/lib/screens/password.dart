@@ -1,5 +1,11 @@
+import 'dart:convert';
+
 import 'package:apglobal/service/communicator.dart';
 import 'package:flutter/material.dart';
+
+import 'home.dart';
+import 'myapp.dart';
+import 'newPassword.dart';
 
 class Password extends StatefulWidget {
 
@@ -9,6 +15,7 @@ PasswordState createState() => PasswordState();
 class PasswordState extends State<Password> {
 
   TextEditingController email = new TextEditingController();
+  TextEditingController code = new TextEditingController();
 
   textFieldWidget(String label, bool secure, TextEditingController controller){
     return Container(
@@ -49,7 +56,8 @@ class PasswordState extends State<Password> {
     return MaterialApp(
       home: Scaffold(
         key: _scaffoldKey,
-        appBar: AppBar(title: Text("Reset Password"), centerTitle: true, ),
+        appBar: AppBar(title: Text("Reset Password"), centerTitle: true, leading: IconButton(icon: Icon(Icons.arrow_back), onPressed: () => runApp(MyApp())),),
+
         body: Container(
           child: Column(
             children: <Widget>[
@@ -71,7 +79,40 @@ class PasswordState extends State<Password> {
                     child: Text("Reset Password"),
                   ),
                   RaisedButton(
-                    onPressed: (){},
+                    onPressed: (){
+                      showDialog(
+                        context: _scaffoldKey.currentContext,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: Text("Verification Code"),
+                            content: textFieldWidget("Code", false, code),
+                            actions: <Widget>[
+                              FlatButton(
+                                child: Text("verify"),
+                                onPressed: (){
+                                  Communicator.checkVerificationCode(code.text).then((result) {
+                                    Map<String, dynamic> veri = json.decode(result);
+
+print(veri);
+                                    if(veri['status'] == 'yes'){
+                                      runApp(ResetPassword());
+                                    }else{
+
+                                    }
+                                  });
+
+
+                                },
+                              ),
+                              FlatButton( child: Text("close"),
+                              onPressed: (){
+                                Navigator.of(context).pop();
+                              },)
+                            ],
+                          );
+                        }
+                      );
+                    },
                     child: Text("I have a code"),
                   )
                 ],

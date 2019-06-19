@@ -11,6 +11,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sms/sms.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import 'alerts.dart';
+import 'deviceList.dart';
+import 'map.dart';
 import 'myapp.dart';
 
 class Home extends StatefulWidget {
@@ -56,11 +59,11 @@ class Homestate extends State<Home> {
 
 
     setState(() {
-       brand = _device['brand'] + " " + _device['model'] + " " + _device['year']; 
-       deviceNumber = _device['device'];
-       arm = _device['status']['arm'];
-      monitor = _device['status']['monitor'];
-      power = _device['status']['power']; 
+       brand = _device[0]['brand'] + " " + _device[0]['model'] + " " + _device[0]['year']; 
+       deviceNumber = _device[0]['device'];
+       arm = _device[0]['status']['arm'];
+      monitor = _device[0]['status']['monitor'];
+      power = _device[0]['status']['power']; 
     });
   }
 
@@ -125,10 +128,11 @@ class Homestate extends State<Home> {
     // TODO: implement build
     return MaterialApp(
       home: Scaffold(
-        appBar: AppBar(centerTitle: true, title: Text("Dashboard"), backgroundColor: Color(0xFF3a94bf), actions: <Widget>[
+        appBar: AppBar(centerTitle: true, title: Text("Dashboard"), backgroundColor: Color(0xFF3a94bf), 
+        actions: <Widget>[
           IconButton(
                       onPressed: (){
-
+                        runApp(Maps());
                       },
                       icon: Icon(Icons.map, color: Colors.white,),
                     )
@@ -145,7 +149,28 @@ class Homestate extends State<Home> {
         ),
       ),
       ListTile(
-        title: Text('Logout'),
+        title: Row(children: <Widget>[ Padding(padding: EdgeInsets.only(right: 15), child: Icon(Icons.devices),),Text('Switch Device')],),
+        onTap: () {
+          
+          runApp(DeviceList());
+        },
+      ),
+      ListTile(
+        title: Row(children: <Widget>[ Padding(padding: EdgeInsets.only(right: 15), child: Icon(Icons.attach_money),),Text('Billing')],),
+        onTap: () {
+          
+          // runApp(DeviceList());
+        },
+      ),
+      ListTile(
+        title: Row(children: <Widget>[ Padding(padding: EdgeInsets.only(right: 15), child: Icon(Icons.add_alert),),Text('Alerts')],),
+        onTap: () {
+          
+           runApp(AlertOptions());
+        },
+      ),
+      ListTile(
+        title: Row(children: <Widget>[ Padding(padding: EdgeInsets.only(right: 15), child: Icon(Icons.security),),Text('Logout')],),
         onTap: () {
           SharedPreferences.getInstance().then((result) {
             result.remove('token');
@@ -349,8 +374,37 @@ class Homestate extends State<Home> {
                             children: <Widget>[
                               IconButton(icon: Icon(Icons.tram, color: Colors.white), onPressed: (){}, iconSize: 35,),
                               Padding(
-                                padding: EdgeInsets.only(top: 35, right: 15),
-                                child: Text('1hr', style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Colors.white),),
+                                padding: EdgeInsets.only(top: 25, right: 10),
+                                child:IconButton(icon: Icon(Icons.my_location, color: Colors.white), iconSize: 35, onPressed: (){
+                                  SmsSender sender = new SmsSender();
+                                  String address = "$deviceNumber";
+
+                                  SmsMessage message = new SmsMessage(address, 'fix030s005n+123456'); 
+
+                                  message.onStateChanged.listen((state) {
+
+                                  if (state == SmsMessageState.Sent) {
+                                    print("SMS is sent!");
+                                    runApp(LoadingScreenExample());
+                                  } else if (state == SmsMessageState.Delivered) {
+                                    print("SMS is delivered!");
+                                  }else if(state == SmsMessageState.Fail){
+                                    final snackBar = SnackBar(
+                                      content: Text('Unable to contact device, please ensure you have credit on the phone'),
+                                      action: SnackBarAction(
+                                        label: 'Undo',
+                                        onPressed: () {
+                                          // Some code to undo the change!
+                                        },
+                                      ),
+                                    );
+
+                                    // Find the Scaffold in the Widget tree and use it to show a SnackBar!
+                                    _scaffoldKey.currentState.showSnackBar(snackBar);
+                                  }
+                                });
+                                sender.sendSms(message);
+                                },),
                               ),
                             ],
                           ),

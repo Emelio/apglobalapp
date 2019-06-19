@@ -23,6 +23,34 @@ class Communicator {
     }
   }
 
+  static Future<String> addTracking(Map<String, dynamic> data) async {
+    String url = 'https://apgloballimited.com/api/command/addTracking';
+
+    SharedPreferences pre = await SharedPreferences.getInstance(); 
+    String token = pre.getString('token');
+
+    var jsonData = json.encode(data);
+
+    http.Response response = await http.post(url, body: jsonData, headers: {HttpHeaders.authorizationHeader: "Bearer $token", "Content-Type": "application/json"});
+
+    print(response.body);
+    print(response.statusCode);
+    return response.body;
+  } 
+
+  static Future<Map<String, dynamic>> getTracking() async {
+
+    SharedPreferences pre = await SharedPreferences.getInstance(); 
+    String token = pre.getString('token');
+    String url = 'https://apgloballimited.com/api/command/getTracking';
+
+    http.Response response = await http.get(url, headers: {HttpHeaders.authorizationHeader: "Bearer $token"}); 
+
+    var data = json.decode(response.body);
+    return data;
+    
+  }
+
   static Future<dynamic> getDevice(String userId) async {
 
     String url = "https://apgloballimited.com/api/command/getDevice/$userId";
@@ -44,6 +72,18 @@ class Communicator {
     } catch (e) {
       print("test: $e");
     }   
+  }
+
+  static Future<dynamic> getDeviceList() async {
+    String url = "https://apgloballimited.com/api/command/getListOfDevices";
+
+    SharedPreferences pre = await SharedPreferences.getInstance(); 
+    String token = pre.getString('token');
+
+    http.Response response = await http.get(url, headers: {HttpHeaders.authorizationHeader: "Bearer $token"},);
+
+    var jsonData = json.decode(response.body);
+    return jsonData;
   }
 
   static Future<dynamic> updateStatus(String status, String state) async {
@@ -73,13 +113,56 @@ class Communicator {
 
   static Future<String> resetPassword(String email) async {
 
-    String url = "https://apgloballimited.com/api/command/resetPassword/$email";
+    String url = "https://apgloballimited.com/api/users/resetpassword/$email/0";
+
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    pref.setString('email', email);
 
     http.Response response = await http.get(url);
 
     print(response.statusCode);
 
     return response.body; 
+  }
+
+  static Future<Map<String, dynamic>> updatePassword(String password) async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String email = pref.getString('email');
+    String code = pref.getString('code');
+
+    var base = base64String(email+":"+code);
+
+    String url = 'https://apgloballimited.com/api/users/updatePassword/$password/$base';
+
+    http.Response response = await http.get(url);
+
+    print(response.body);
+
+    Map<String, dynamic> map = json.decode(response.body);
+
+    return map; 
+    
+  }
+
+  static Future<String> checkVerificationCode(String code) async {
+
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String email = pref.getString('email');
+    pref.setString('code', code);
+
+  
+    String url = 'https://apgloballimited.com/api/users/resetpassword/$email/$code';
+    http.Response response = await http.get(url);
+    
+    print(response.body);
+
+    return response.body;
+  }
+
+  static base64String(String string){
+    var bytes = utf8.encode(string);
+    var base64Str = base64.encode(bytes);
+    return base64Str; 
   }
 
 }
