@@ -24,7 +24,14 @@ class LoadingScreenExampleState extends State<LoadingScreenExample> {
     getDevice();
     receiver.onSmsReceived.listen((SmsMessage msg){
 
-      if (devicePhone.toString().contains(msg.sender)) {
+      print(devicePhone.toStringAsFixed(0));
+      print(msg.sender.substring(2));
+
+      if (devicePhone.toStringAsFixed(0).contains(msg.sender.substring(2))) {
+
+        print(msg.sender+" : "+ devicePhone.toStringAsFixed(0) );
+        print(msg.body);
+        print(msg.address);
         
         if (msg.body.contains('Tracker is activated')) {
           
@@ -37,6 +44,7 @@ class LoadingScreenExampleState extends State<LoadingScreenExample> {
           runApp(Home());
           
         }else if(msg.body.contains('lat')) {
+
 
           Map<String, dynamic> map = new Map(); 
           String message = msg.body;
@@ -88,6 +96,8 @@ class LoadingScreenExampleState extends State<LoadingScreenExample> {
     setState(() {
 
       devicePhone = _device[0]['device'];
+
+      print(devicePhone);
 
     });
   }

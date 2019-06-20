@@ -34,7 +34,7 @@ class Homestate extends State<Home> {
 
     if(monitor == "on"){
       SmsSender sender = new SmsSender();
-      String address = "$deviceNumber";
+      String address = "${deviceNumber.toStringAsFixed(0)}";
       SmsMessage message = new SmsMessage(address, 'tracker123456');
       sender.sendSms(message);
 
@@ -239,10 +239,10 @@ class Homestate extends State<Home> {
                           Column(
                             children: <Widget>[
                               
-                              IconButton(icon: Icon(Icons.lock_outline, color: Colors.white,), iconSize: 35, onPressed: (){
+                                IconButton(icon: Icon(Icons.lock_outline, color: Colors.white,), iconSize: 35, onPressed: (){
                                 SmsQuery query = new SmsQuery();
                                 SmsSender sender = new SmsSender();
-                                String address = "$deviceNumber";
+                                String address = "${deviceNumber.toStringAsFixed(0)}";
                                 SmsMessage message; 
                                 if (arm == "on") {
                                   message = new SmsMessage(address, 'arm123456');
@@ -282,7 +282,7 @@ class Homestate extends State<Home> {
                                 child: IconButton(icon: Icon(Icons.speaker, color: Colors.white), iconSize: 35, onPressed: (){
                                   SmsQuery query = new SmsQuery();
                                   SmsSender sender = new SmsSender();
-                                  String address = "$deviceNumber";
+                                  String address = "${deviceNumber.toStringAsFixed(0)}";
                                   SmsMessage message;
 
                                   
@@ -335,7 +335,7 @@ class Homestate extends State<Home> {
                             IconButton(icon: Icon(Icons.power_settings_new,  color: Colors.white), onPressed: (){
                               SmsQuery query = new SmsQuery();
                                 SmsSender sender = new SmsSender();
-                                String address = "$deviceNumber";
+                                String address = "${deviceNumber.toStringAsFixed(0)}";
                                 SmsMessage message; 
                                 if (power == "on") {
                                   message = new SmsMessage(address, 'arm123456');
@@ -377,9 +377,9 @@ class Homestate extends State<Home> {
                                 padding: EdgeInsets.only(top: 25, right: 10),
                                 child:IconButton(icon: Icon(Icons.my_location, color: Colors.white), iconSize: 35, onPressed: (){
                                   SmsSender sender = new SmsSender();
-                                  String address = "$deviceNumber";
+                                  String address = "${deviceNumber.toStringAsFixed(0)}";
 
-                                  SmsMessage message = new SmsMessage(address, 'fix030s005n+123456'); 
+                                  SmsMessage message = new SmsMessage(address, 'fix030s001n123456'); 
 
                                   message.onStateChanged.listen((state) {
 
