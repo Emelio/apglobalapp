@@ -10,7 +10,9 @@ class Communicator {
   static Future<bool> login(String email, String password) async {
     String url = 'https://apgloballimited.com/api/users/login';
 
-    http.Response response = await http.post(url, body: json.encode({'Email': email, 'Password': password}), headers:  {"Content-Type": "application/json"}); 
+    http.Response response = await http.post(url, body: json.encode({'Email': email, 'Password': password}), headers:  {"Content-Type": "application/json"});
+
+    print(response.body);
     var jsonbody = json.decode(response.body);
 
     SharedPreferences pref = await SharedPreferences.getInstance();
@@ -51,9 +53,9 @@ class Communicator {
     
   }
 
-  static Future<dynamic> getDevice(String userId) async {
+  static Future<dynamic> getDevice() async {
 
-    String url = "https://apgloballimited.com/api/command/getDevice/$userId";
+    String url = "https://apgloballimited.com/api/command/getDevice";
 
     SharedPreferences pre = await SharedPreferences.getInstance(); 
     String token = pre.getString('token');

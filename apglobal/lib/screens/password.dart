@@ -97,7 +97,7 @@ print(veri);
                                     if(veri['status'] == 'yes'){
                                       runApp(ResetPassword());
                                     }else{
-
+                                      _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("The code you entered is incorrect}"),));
                                     }
                                   });
 

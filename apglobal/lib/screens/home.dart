@@ -1,4 +1,5 @@
 
+import 'package:crypto/crypto.dart';
 import 'dart:convert';
 
 import 'package:apglobal/screens/loading.dart';
@@ -48,10 +49,8 @@ class Homestate extends State<Home> {
     SharedPreferences pref = await SharedPreferences.getInstance();
     String token = pref.getString('token'); 
     List<String> tokens = token.split('.');
-    Map<String, dynamic> map = json.decode(decodeBase64(tokens[1])); 
-    String userId = map['nameid']; 
     
-    await Communicator.getDevice(userId);
+    await Communicator.getDevice();
 
     var device = pref.getString('device');
     var _device = json.decode(device);
@@ -77,7 +76,6 @@ class Homestate extends State<Home> {
   }
 
   decodeBase64(String base) {
-    
     var bytes = base64.decode(base);
     var base64Str = utf8.decode(bytes);
     return base64Str;
