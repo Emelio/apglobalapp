@@ -2,6 +2,8 @@
 import 'package:apglobal/screens/home.dart';
 import 'package:flutter/material.dart';
 
+import 'alert/speed.dart';
+
 
 class AlertOptions extends StatelessWidget {
   @override
@@ -16,24 +18,27 @@ class AlertOptions extends StatelessWidget {
   crossAxisSpacing: 10.0,
   crossAxisCount: 2,
   children: <Widget>[
-    Container(
-      decoration: BoxDecoration(
-        border: null,
-        borderRadius: BorderRadius.all(Radius.circular(10)),
-        color: Colors.green,
+    GestureDetector(
+      onTap: ()=> runApp(Speed()),
+      child: Container(
+        decoration: BoxDecoration(
+          border: null,
+          borderRadius: BorderRadius.all(Radius.circular(10)),
+          color: Colors.green,
+        ),
+        padding: EdgeInsets.all(10),
+        margin: EdgeInsets.all(10),
+
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Icon(Icons.event_available, size: 70, color: Colors.white,),
+            Text("Over Speed Alart", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),)
+          ],
+        ),
       ),
-      padding: EdgeInsets.all(10),
-      margin: EdgeInsets.all(10),
-      
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          Icon(Icons.event_available, size: 70, color: Colors.white,),
-          Text("Over Speed Alart", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),)
-        ],
-      ),
-    ),
+        ),
 
     Container(
       decoration: BoxDecoration(

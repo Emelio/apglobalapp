@@ -1,4 +1,5 @@
 
+import 'package:apglobal/screens/alerts.dart';
 import 'package:flutter/material.dart';
 
 class Speed extends StatefulWidget {
@@ -12,7 +13,7 @@ class SpeedState extends State<Speed> {
     // TODO: implement build
     return MaterialApp(
       home: Scaffold(
-        appBar: AppBar(title: Text("Over Speed Alert"),),
+        appBar: AppBar(title: Text('Alerts'), centerTitle: true, leading: IconButton(icon: Icon(Icons.arrow_back), onPressed: () => runApp(AlertOptions()),)),
         body: Column(
           children: <Widget>[
             Text(""),
