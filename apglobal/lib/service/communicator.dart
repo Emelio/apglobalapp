@@ -2,6 +2,8 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:apglobal/screens/myapp.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -53,27 +55,25 @@ class Communicator {
     
   }
 
-  static Future<dynamic> getDevice() async {
+  static Future<dynamic> getDevice(String id) async {
 
-    String url = "https://apgloballimited.com/api/command/getDevice";
+    String url = "https://apgloballimited.com/api/command/getDevice/$id";
 
     SharedPreferences pre = await SharedPreferences.getInstance(); 
     String token = pre.getString('token');
 
-    try {
       http.Response response = await http.get(url, headers: {HttpHeaders.authorizationHeader: "Bearer $token"},); 
-      print(response.body);
       SharedPreferences pref = await SharedPreferences.getInstance(); 
-
+print(response.statusCode);
+print(response.body);
       if(response.body != null && response.body != '') {
-        pref.setString('device', response.body);
+        if(response.statusCode == 200){
+          pref.setString('device', response.body);
+        }
+        
       }
-      
-
       return response.body;
-    } catch (e) {
-      print("test: $e");
-    }   
+
   }
 
   static Future<dynamic> getDeviceList() async {
@@ -84,11 +84,21 @@ class Communicator {
 
     http.Response response = await http.get(url, headers: {HttpHeaders.authorizationHeader: "Bearer $token"},);
 
-    var jsonData = json.decode(response.body);
-    return jsonData;
+    print(response.statusCode);
+
+    if(response.statusCode == 401){
+      pre.remove('token');
+      return 'login';      
+    }else{
+      var jsonData = json.decode(response.body);
+
+      return jsonData;
+    }
+
+    
   }
 
-  static Future<dynamic> updateStatus(String status, String state) async {
+  static Future<dynamic> updateStatus(String status, String state, String id) async {
 
     SharedPreferences pre = await SharedPreferences.getInstance(); 
     String token = pre.getString('token');
@@ -97,7 +107,7 @@ class Communicator {
     Map<String, dynamic> map = json.decode(userId);
     String user = map['nameid'];
 
-    String url = "https://apgloballimited.com/api/command/updateStatus/$status/$state/$user";
+    String url = "https://apgloballimited.com/api/command/updateStatus/$status/$state/$id";
 
 
     http.Response response = await http.get(url, headers: {HttpHeaders.authorizationHeader: "Bearer $token"},);

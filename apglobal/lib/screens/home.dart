@@ -25,8 +25,9 @@ class Home extends StatefulWidget {
 class Homestate extends State<Home> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   String brand; 
-  double deviceNumber = 123;
-  String arm, monitor, power; 
+  double deviceNumber;
+  String arm, monitor, powerString, power, password, deviceId;
+  String carImage = "image/car_outline2.png"; 
   
 
   Homestate(){
@@ -39,7 +40,7 @@ class Homestate extends State<Home> {
       SmsMessage message = new SmsMessage(address, 'tracker123456');
       sender.sendSms(message);
 
-      Communicator.updateStatus("monitor", "off");
+      Communicator.updateStatus("monitor", "off", deviceId);
 
     }
   }
@@ -49,20 +50,51 @@ class Homestate extends State<Home> {
     SharedPreferences pref = await SharedPreferences.getInstance();
     String token = pref.getString('token'); 
     List<String> tokens = token.split('.');
+
+    var carList = await Communicator.getDeviceList();
+
+    if(carList == 'login') {
+      runApp(MyApp());
+      print('test');
+    }
     
-    await Communicator.getDevice();
+    await Communicator.getDevice(carList[0]);
 
     var device = pref.getString('device');
     var _device = json.decode(device);
+    var image;
+    var powerStringtemp;
+
+    var carState = _device['status']['arm'];
+      
+    if (carState == 'off') {
+      image = 'image/car_outline2.png';
+    }else if(carState == 'on') {
+      image = 'image/car_outline.png';
+    }
+
+    if(_device['status']['power'] == 'on'){
+      powerStringtemp = 'Kill switch activated';
+    }else if(_device['status']['power'] == 'off'){
+      powerStringtemp = 'Kill switch deactivated';
+    }
+
+    print(carState);
+
+    
     var monitorCheck;
 
 
     setState(() {
-       brand = _device[0]['brand'] + " " + _device[0]['model'] + " " + _device[0]['year']; 
-       deviceNumber = _device[0]['device'];
-       arm = _device[0]['status']['arm'];
-      monitor = _device[0]['status']['monitor'];
-      power = _device[0]['status']['power']; 
+       brand = _device['brand'] + " " + _device['model'] + " " + _device['year']; 
+       deviceNumber = _device['device'];
+       arm = _device['status']['arm'];
+      monitor = _device['status']['monitor'];
+      powerString = powerStringtemp;
+      power = _device['status']['power'];
+      password = _device['password'];
+      deviceId = carList[0];
+      carImage = image;
     });
   }
 
@@ -81,19 +113,6 @@ class Homestate extends State<Home> {
     return base64Str;
   }
 
-  Widget armStatus(String arm) {
-
-    if (arm == 'on') {
-      
-      return Container(
-                  child: Image(image: ExactAssetImage('image/car_outline.png'), width: 200,),
-                );
-    }else{
-      return Container(
-                  child: Image(image: ExactAssetImage('image/car_outline2.png'), width: 200,),
-                );
-    }
-  }
 
   heading() {
     return Row(
@@ -206,7 +225,14 @@ class Homestate extends State<Home> {
                   ),
                 ),
 
-                armStatus(arm),
+                Container(
+                  child: Image(image: ExactAssetImage(carImage), width: 200,),
+                ),
+
+                Padding(
+                  padding: EdgeInsets.all(10),
+                  child: Text('$powerString', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),),
+                ),
 
                 Expanded(
                   child: Stack( 
@@ -243,11 +269,11 @@ class Homestate extends State<Home> {
                                 String address = "${deviceNumber.toStringAsFixed(0)}";
                                 SmsMessage message; 
                                 if (arm == "on") {
-                                  message = new SmsMessage(address, 'arm123456');
+                                  message = new SmsMessage(address, 'arm$password');
                                 }else if(arm == "off"){
-                                  message = new SmsMessage(address, 'disarm123456'); 
+                                  message = new SmsMessage(address, 'disarm$password'); 
                                 }else{
-                                  message = new SmsMessage(address, 'disarm123456'); 
+                                  message = new SmsMessage(address, 'disarm$password'); 
                                 }
                                 
                                 message.onStateChanged.listen((state) {
@@ -287,14 +313,14 @@ class Homestate extends State<Home> {
 
                                   if (monitor == "off") {
                                     // send message to turn monitor on and iniate call
-                                    message = new SmsMessage(address, 'monitor123456');
+                                    message = new SmsMessage(address, 'monitor$password');
 
                                     message.onStateChanged.listen((state){
 
 
                                       if (state == SmsMessageState.Sent) {
 
-                                        Communicator.updateStatus("monitor", "on");
+                                        Communicator.updateStatus("monitor", "on", deviceId);
                                         
                                         _launchURL();
 
@@ -319,7 +345,7 @@ class Homestate extends State<Home> {
 
                                   }else{
                                     // turn off monitor  
-                                    message = new SmsMessage(address, 'tracker123456');
+                                    message = new SmsMessage(address, 'tracker$password');
                                   }
 
 
@@ -336,11 +362,11 @@ class Homestate extends State<Home> {
                                 String address = "${deviceNumber.toStringAsFixed(0)}";
                                 SmsMessage message; 
                                 if (power == "on") {
-                                  message = new SmsMessage(address, 'arm123456');
-                                }else if(arm == "off"){
-                                  message = new SmsMessage(address, 'disarm123456'); 
+                                  message = new SmsMessage(address, 'stop$password');
+                                }else if(power == "off"){
+                                  message = new SmsMessage(address, 'resume$password'); 
                                 }else{
-                                  message = new SmsMessage(address, 'disarm123456'); 
+                                  message = new SmsMessage(address, 'resume$password'); 
                                 }
                                 
                                 message.onStateChanged.listen((state) {
@@ -377,7 +403,7 @@ class Homestate extends State<Home> {
                                   SmsSender sender = new SmsSender();
                                   String address = "${deviceNumber.toStringAsFixed(0)}";
 
-                                  SmsMessage message = new SmsMessage(address, 'fix030s001n123456'); 
+                                  SmsMessage message = new SmsMessage(address, 'fix030s001n$password'); 
 
                                   message.onStateChanged.listen((state) {
 

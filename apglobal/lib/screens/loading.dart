@@ -1,6 +1,7 @@
 
 import 'dart:convert';
 
+import 'package:apglobal/screens/alerts.dart';
 import 'package:apglobal/service/communicator.dart';
 import 'package:flutter/material.dart';
 import 'package:loading/indicator/ball_pulse_indicator.dart';
@@ -19,6 +20,8 @@ class LoadingScreenExample extends StatefulWidget {
 class LoadingScreenExampleState extends State<LoadingScreenExample> {
   SmsReceiver receiver = new SmsReceiver();
   double devicePhone; 
+  String deviceId; 
+  Map<String, dynamic> deviceData;
 
   LoadingScreenExampleState() {
     getDevice();
@@ -35,12 +38,14 @@ class LoadingScreenExampleState extends State<LoadingScreenExample> {
         
         if (msg.body.contains('Tracker is activated')) {
           
-          Communicator.updateStatus("arm", "on");
+          Communicator.updateStatus("arm", "on", deviceId);
+          deviceData['status']['arm'] = "on";
           runApp(Home());
 
         }else if(msg.body.contains('Tracker is deactivated')){
           
-          Communicator.updateStatus("arm", "off");
+          Communicator.updateStatus("arm", "off", deviceId);
+          deviceData['status']['arm'] = "off";
           runApp(Home());
           
         }else if(msg.body.contains('lat')) {
@@ -78,7 +83,22 @@ class LoadingScreenExampleState extends State<LoadingScreenExample> {
           Communicator.addTracking(map);
 
           runApp(Maps());
+        }else if(msg.body.contains("speed OK!")){
+          runApp(AlertOptions());
+        }else if(msg.body.contains("Stop engine Succeed")){
+
+          Communicator.updateStatus("power", "off", deviceId);
+          deviceData['status']['power'] = "off";
+          runApp(Home());
+
+        }else if(msg.body.contains("Resume engine Succeed")) {
+
+          Communicator.updateStatus("power", "on", deviceId);
+          deviceData['status']['power'] = "on";
+          runApp(Home());
         }
+
+        
         
       }else{
         print(msg.sender);
@@ -95,11 +115,15 @@ class LoadingScreenExampleState extends State<LoadingScreenExample> {
 
     setState(() {
 
-      devicePhone = _device[0]['device'];
-
-      print(devicePhone);
-
+      devicePhone = _device['device'];
+      deviceId = _device['_id'];
+      deviceData = _device;
     });
+  }
+
+  updateBackground(Map<String, dynamic> map) async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    pref.setString('device', json.encode(map));
   }
 
   @override
