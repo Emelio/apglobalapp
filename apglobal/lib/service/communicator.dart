@@ -12,7 +12,7 @@ class Communicator {
   static Future<bool> login(String email, String password) async {
     String url = 'https://apgloballimited.com/api/users/login';
 
-    http.Response response = await http.post(url, body: json.encode({'Email': email, 'Password': password}), headers:  {"Content-Type": "application/json"});
+    http.Response response = await http.post(url, body: json.encode({'Email': email.toLowerCase(), 'Password': password}), headers:  {"Content-Type": "application/json"});
 
     print(response.body);
     var jsonbody = json.decode(response.body);
@@ -142,7 +142,10 @@ print(response.body);
     String email = pref.getString('email');
     String code = pref.getString('code');
 
-    var base = base64String(email+":"+code);
+    var base = base64String(email.toLowerCase()+":"+code);
+    print(email);
+    print(code);
+    print(base);
 
     String url = 'https://apgloballimited.com/api/users/updatePassword/$password/$base';
 
@@ -159,13 +162,14 @@ print(response.body);
   static Future<String> checkVerificationCode(String code) async {
 
     SharedPreferences pref = await SharedPreferences.getInstance();
-    String email = pref.getString('email');
+    String email = pref.getString('email').toLowerCase();
     pref.setString('code', code);
 
   
     String url = 'https://apgloballimited.com/api/users/resetpassword/$email/$code';
     http.Response response = await http.get(url);
-    
+
+    print(response.statusCode);
     print(response.body);
 
     return response.body;

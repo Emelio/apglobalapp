@@ -91,6 +91,7 @@ class PasswordState extends State<Password> {
                                 child: Text("verify"),
                                 onPressed: (){
                                   Communicator.checkVerificationCode(code.text).then((result) {
+                                    print(result);
                                     Map<String, dynamic> veri = json.decode(result);
 
 print(veri);
