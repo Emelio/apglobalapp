@@ -1,9 +1,11 @@
 
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:apglobal/service/communicator.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'home.dart';
 
@@ -20,11 +22,19 @@ class MapSampleState extends State<Maps> {
   Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
 
   MapSampleState(){
-    Communicator.getTracking().then((result) {
+    Communicator.getTracking().then((result) async {
+
+      SharedPreferences preferences = await SharedPreferences.getInstance();
+      Map<String,dynamic> newMap = json.decode(preferences.getString('mapData'));
+      Communicator.addTracking(newMap);
+
+      var carList = await Communicator.getDeviceList();
+      Communicator.getDevice(carList[0]);
+
       setState(() {
         print(result);
-        latLng = LatLng(result['lat'],result['longi']);
-        _goToTheLake(LatLng(result['lat'],result['longi']));
+        latLng = LatLng(double.parse(newMap['Lat']),double.parse(newMap['Longi']));
+        _goToTheLake(LatLng(double.parse(newMap['Lat']),double.parse(newMap['Longi'])));
 
         // creating a new MARKER
     final Marker marker = Marker(

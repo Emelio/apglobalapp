@@ -11,6 +11,7 @@ import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sms/sms.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:geocoder/geocoder.dart';
 
 import 'alerts.dart';
 import 'deviceList.dart';
@@ -28,6 +29,7 @@ class Homestate extends State<Home> {
   double deviceNumber;
   String arm, monitor, powerString, power, password, deviceId;
   String carImage = "image/car_outline2.png"; 
+  String place; 
   
 
   Homestate(){
@@ -52,15 +54,19 @@ class Homestate extends State<Home> {
     List<String> tokens = token.split('.');
 
     var carList = await Communicator.getDeviceList();
+    var tracking = await Communicator.getTracking();
+
+    print(tracking);
 
     if(carList == 'login') {
       runApp(MyApp());
       print('test');
     }
-    
-    await Communicator.getDevice(carList[0]);
 
     var device = pref.getString('device');
+    
+    
+    
     var _device = json.decode(device);
     var image;
     var powerStringtemp;
@@ -80,9 +86,20 @@ class Homestate extends State<Home> {
     }
 
     print(carState);
+    var placeHolder;
 
+    if(tracking['lat'] != null){
+      // From coordinates
+    final coordinates = new Coordinates(tracking['lat'], tracking['longi']);
+    var addresses = await Geocoder.local.findAddressesFromCoordinates(coordinates);
+    var first = addresses.first;
+     placeHolder = first.addressLine; 
+    print(first.addressLine);
+    }else{
+      placeHolder = "no location data";
+    }
     
-    var monitorCheck;
+    
 
 
     setState(() {
@@ -95,7 +112,10 @@ class Homestate extends State<Home> {
       password = _device['password'];
       deviceId = carList[0];
       carImage = image;
+      place = placeHolder;
     });
+
+    await Communicator.getDevice(carList[0]);
   }
 
   _launchURL() async {
@@ -220,7 +240,7 @@ class Homestate extends State<Home> {
                         child: Text('$brand', style: TextStyle(color: Colors.white, fontSize: 25, fontWeight: FontWeight.bold),),
                       ),
                       Text('Last recorded location:', style: TextStyle(color: Colors.white)),
-                      Text('no data',style: TextStyle(color: Colors.white)),
+                      Text('$place',style: TextStyle(color: Colors.white)),
                     ],
                   ),
                 ),
