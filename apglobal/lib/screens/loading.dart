@@ -82,8 +82,8 @@ class LoadingScreenExampleState extends State<LoadingScreenExample> {
 
           print(map);
 
-          SharedPreferences pref = await SharedPreferences.getInstance();
-          pref.setString('mapData', json.encode(map));
+
+          Communicator.addTracking(map);
           runApp(Maps());
 
         }else if(msg.body.contains("speed OK!")){

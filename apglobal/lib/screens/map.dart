@@ -24,17 +24,20 @@ class MapSampleState extends State<Maps> {
   MapSampleState(){
     Communicator.getTracking().then((result) async {
 
-      SharedPreferences preferences = await SharedPreferences.getInstance();
-      Map<String,dynamic> newMap = json.decode(preferences.getString('mapData'));
-      Communicator.addTracking(newMap);
 
       var carList = await Communicator.getDeviceList();
       Communicator.getDevice(carList[0]);
 
+      print(result);
+
+      double lat = result['lat'];
+      double longi = result['longi'];
+
+
       setState(() {
-        print(result);
-        latLng = LatLng(double.parse(newMap['Lat']),double.parse(newMap['Longi']));
-        _goToTheLake(LatLng(double.parse(newMap['Lat']),double.parse(newMap['Longi'])));
+
+        latLng = LatLng(lat,longi);
+        _goToTheLake(LatLng(lat,longi));
 
         // creating a new MARKER
     final Marker marker = Marker(
