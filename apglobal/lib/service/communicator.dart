@@ -40,6 +40,7 @@ class Communicator {
     print(response.body);
     print(response.statusCode);
     return response.body;
+
   } 
 
   static Future<Map<String, dynamic>> getTracking() async {
@@ -49,9 +50,9 @@ class Communicator {
     String url = 'https://apgloballimited.com/api/command/getTracking';
 
     http.Response response = await http.get(url, headers: {HttpHeaders.authorizationHeader: "Bearer $token"}); 
-print(response.body);
-print(response.statusCode);
-    var data = json.decode(response.body);
+
+    Map<String, dynamic> data = json.decode(response.body);
+    print(data);
     return data;
     
   }

@@ -25,16 +25,18 @@ class LoadingScreenExampleState extends State<LoadingScreenExample> {
 
   LoadingScreenExampleState() {
     getDevice();
-    receiver.onSmsReceived.listen((SmsMessage msg){
+    receiver.onSmsReceived.listen((SmsMessage msg) async {
 
       print(devicePhone.toStringAsFixed(0));
       print(msg.sender.substring(2));
+      print(msg.body);
 
       if (devicePhone.toStringAsFixed(0).contains(msg.sender.substring(2))) {
 
         print(msg.sender+" : "+ devicePhone.toStringAsFixed(0) );
         print(msg.body);
         print(msg.address);
+        
         
         if (msg.body.contains('Tracker is activated')) {
           
@@ -49,7 +51,6 @@ class LoadingScreenExampleState extends State<LoadingScreenExample> {
           runApp(Home());
           
         }else if(msg.body.contains('lat')) {
-
 
           Map<String, dynamic> map = new Map(); 
           String message = msg.body;
@@ -76,25 +77,27 @@ class LoadingScreenExampleState extends State<LoadingScreenExample> {
 
           }
 
-          map['Time'] = new DateTime.now().millisecondsSinceEpoch;
+          var now = new DateTime.now();
+          map['Time'] = now.millisecondsSinceEpoch;
 
           print(map);
 
-          Communicator.addTracking(map);
-
+          SharedPreferences pref = await SharedPreferences.getInstance();
+          pref.setString('mapData', json.encode(map));
           runApp(Maps());
+
         }else if(msg.body.contains("speed OK!")){
           runApp(AlertOptions());
         }else if(msg.body.contains("Stop engine Succeed")){
 
-          Communicator.updateStatus("power", "off", deviceId);
-          deviceData['status']['power'] = "off";
+          Communicator.updateStatus("power", "on", deviceId);
+          deviceData['status']['power'] = "on";
           runApp(Home());
 
         }else if(msg.body.contains("Resume engine Succeed")) {
 
-          Communicator.updateStatus("power", "on", deviceId);
-          deviceData['status']['power'] = "on";
+          Communicator.updateStatus("power", "off", deviceId);
+          deviceData['status']['power'] = "off";
           runApp(Home());
         }
 
