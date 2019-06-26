@@ -49,7 +49,8 @@ class Communicator {
     String url = 'https://apgloballimited.com/api/command/getTracking';
 
     http.Response response = await http.get(url, headers: {HttpHeaders.authorizationHeader: "Bearer $token"}); 
-
+print(response.body);
+print(response.statusCode);
     var data = json.decode(response.body);
     return data;
     
@@ -89,10 +90,12 @@ print(response.body);
     if(response.statusCode == 401){
       pre.remove('token');
       return 'login';      
-    }else{
+    }else if(response.statusCode == 200) {
       var jsonData = json.decode(response.body);
 
       return jsonData;
+    }else{
+      return '';
     }
 
     

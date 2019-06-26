@@ -76,7 +76,7 @@ class LoadingScreenExampleState extends State<LoadingScreenExample> {
 
           }
 
-          map['Time'] = new DateTime.now().toString();
+          map['Time'] = new DateTime.now().millisecondsSinceEpoch;
 
           print(map);
 
