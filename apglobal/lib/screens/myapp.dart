@@ -75,10 +75,11 @@ class MyApp extends StatelessWidget {
                     margin: EdgeInsets.symmetric(horizontal: 0, vertical: 20),
                     child: FlatButton(onPressed: () {
 
-                    Communicator.login(emailController.text, passwordController.text).then((result){
+                    Communicator.login(emailController.text, passwordController.text).then((result) async {
 print(result);
                       if (result == true){
-                        Communicator.getDevice();
+                        SharedPreferences pre = await SharedPreferences.getInstance();
+                        pre.setString('new', 'yes');
                         runApp(Home());
                       }
 

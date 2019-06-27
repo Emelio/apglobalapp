@@ -35,14 +35,19 @@ class Homestate extends State<Home> {
   Homestate(){
     Communicator.getDevice();
     SharedPreferences.getInstance().then((result){
-          
 
     setState(()  {
        
       var device = result.getString('device');
+      var _device;
 
-          
-      var _device = json.decode(device);
+      try{
+        _device = json.decode(device);
+      } on NoSuchMethodError {
+
+        getNewData();
+
+      }
 
       print(_device);
 
@@ -93,21 +98,66 @@ class Homestate extends State<Home> {
     }
   }
 
+  getNewData() async {
+    var device = await Communicator.getDevice();
+    print(device);
+
+    var _device = json.decode(device);
+
+    setState(() {
+
+      var image;
+      var powerStringtemp;
+      var placeHolder;
+
+      var carState = _device['status']['arm'];
+
+      if (carState == 'off') {
+        image = 'image/car_outline2.png';
+      }else if(carState == 'on') {
+        image = 'image/car_outline.png';
+      }
+
+      if(_device['status']['power'] == 'on'){
+        powerStringtemp = 'Kill switch activated';
+      }else if(_device['status']['power'] == 'off'){
+        powerStringtemp = 'Kill switch deactivated';
+      }
+
+      print(carState);
+
+      brand = _device['brand'] + " " + _device['model'] + " " + _device['year'];
+      deviceNumber = _device['device'];
+      arm = _device['status']['arm'];
+      monitor = _device['status']['monitor'];
+      powerString = powerStringtemp;
+      power = _device['status']['power'];
+      password = _device['password'];
+      deviceId = _device['_id'];
+      carImage = image;
+
+
+    });
+    return device;
+  }
 
   getDevice() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     String token = pref.getString('token'); 
     List<String> tokens = token.split('.');
 
+
+
+
     var carList = await Communicator.getDeviceList();
     var tracking = await Communicator.getTracking();
     await Communicator.getDevice();
 
 
-    // if(carList == 'login') {
-    //   runApp(MyApp());
-    //   print('test');
-    // }
+     if(carList == 'login') {
+       runApp(MyApp());
+       print('test');
+     }
 
     var placeHolder;
 
