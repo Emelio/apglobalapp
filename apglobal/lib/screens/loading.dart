@@ -42,12 +42,19 @@ class LoadingScreenExampleState extends State<LoadingScreenExample> {
           
           Communicator.updateStatus("arm", "on", deviceId);
           deviceData['status']['arm'] = "on";
+          // change data to string and save it 
+
+          
+
           runApp(Home());
 
         }else if(msg.body.contains('Tracker is deactivated')){
           
           Communicator.updateStatus("arm", "off", deviceId);
           deviceData['status']['arm'] = "off";
+
+          updateBackground(deviceData);
+
           runApp(Home());
           
         }else if(msg.body.contains('lat')) {
@@ -84,6 +91,7 @@ class LoadingScreenExampleState extends State<LoadingScreenExample> {
 
 
           Communicator.addTracking(map);
+
           runApp(Maps());
 
         }else if(msg.body.contains("speed OK!")){
@@ -92,12 +100,14 @@ class LoadingScreenExampleState extends State<LoadingScreenExample> {
 
           Communicator.updateStatus("power", "on", deviceId);
           deviceData['status']['power'] = "on";
+          updateBackground(deviceData);
           runApp(Home());
 
         }else if(msg.body.contains("Resume engine Succeed")) {
 
           Communicator.updateStatus("power", "off", deviceId);
           deviceData['status']['power'] = "off";
+          updateBackground(deviceData);
           runApp(Home());
         }
 

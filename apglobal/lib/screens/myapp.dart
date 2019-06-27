@@ -78,6 +78,7 @@ class MyApp extends StatelessWidget {
                     Communicator.login(emailController.text, passwordController.text).then((result){
 print(result);
                       if (result == true){
+                        Communicator.getDevice();
                         runApp(Home());
                       }
 

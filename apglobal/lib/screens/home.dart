@@ -27,12 +27,58 @@ class Homestate extends State<Home> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   String brand; 
   double deviceNumber;
-  String arm, monitor, powerString, power, password, deviceId;
+  String arm, monitor, powerString, power, password, deviceId = '';
   String carImage = "image/car_outline2.png"; 
   String place; 
   
 
   Homestate(){
+    Communicator.getDevice();
+    SharedPreferences.getInstance().then((result){
+          
+
+    setState(()  {
+       
+      var device = result.getString('device');
+
+          
+      var _device = json.decode(device);
+
+      print(_device);
+
+      var image;
+      var powerStringtemp;
+      var placeHolder;
+
+    var carState = _device['status']['arm'];
+      
+    if (carState == 'off') {
+      image = 'image/car_outline2.png';
+    }else if(carState == 'on') {
+      image = 'image/car_outline.png';
+    }
+
+    if(_device['status']['power'] == 'on'){
+      powerStringtemp = 'Kill switch activated';
+    }else if(_device['status']['power'] == 'off'){
+      powerStringtemp = 'Kill switch deactivated';
+    }
+
+    print(carState);
+
+       brand = _device['brand'] + " " + _device['model'] + " " + _device['year']; 
+       deviceNumber = _device['device'];
+       arm = _device['status']['arm'];
+      monitor = _device['status']['monitor'];
+      powerString = powerStringtemp;
+      power = _device['status']['power'];
+      password = _device['password'];
+      deviceId = _device['_id'];
+      carImage = image;
+      
+    });
+
+    });
 
     getDevice();
 
@@ -55,37 +101,14 @@ class Homestate extends State<Home> {
 
     var carList = await Communicator.getDeviceList();
     var tracking = await Communicator.getTracking();
+    await Communicator.getDevice();
 
-    print(tracking);
 
-    if(carList == 'login') {
-      runApp(MyApp());
-      print('test');
-    }
+    // if(carList == 'login') {
+    //   runApp(MyApp());
+    //   print('test');
+    // }
 
-    var device = pref.getString('device');
-    
-    
-    
-    var _device = json.decode(device);
-    var image;
-    var powerStringtemp;
-
-    var carState = _device['status']['arm'];
-      
-    if (carState == 'off') {
-      image = 'image/car_outline2.png';
-    }else if(carState == 'on') {
-      image = 'image/car_outline.png';
-    }
-
-    if(_device['status']['power'] == 'on'){
-      powerStringtemp = 'Kill switch activated';
-    }else if(_device['status']['power'] == 'off'){
-      powerStringtemp = 'Kill switch deactivated';
-    }
-
-    print(carState);
     var placeHolder;
 
     if(tracking['lat'] != null){
@@ -99,23 +122,11 @@ class Homestate extends State<Home> {
       placeHolder = "no location data";
     }
     
-    
-
-
     setState(() {
-       brand = _device['brand'] + " " + _device['model'] + " " + _device['year']; 
-       deviceNumber = _device['device'];
-       arm = _device['status']['arm'];
-      monitor = _device['status']['monitor'];
-      powerString = powerStringtemp;
-      power = _device['status']['power'];
-      password = _device['password'];
-      deviceId = carList[0];
-      carImage = image;
       place = placeHolder;
-    });
+    });    
 
-    await Communicator.getDevice(carList[0]);
+    
   }
 
   _launchURL() async {

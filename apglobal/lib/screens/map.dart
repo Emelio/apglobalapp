@@ -24,9 +24,7 @@ class MapSampleState extends State<Maps> {
   MapSampleState(){
     Communicator.getTracking().then((result) async {
 
-
-      var carList = await Communicator.getDeviceList();
-      Communicator.getDevice(carList[0]);
+      Communicator.getDevice();
 
       print(result);
 

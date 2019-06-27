@@ -58,28 +58,38 @@ class Communicator {
     
   }
 
-  static Future<dynamic> getDevice(String id) async {
+  static Future<dynamic> getDevice() async {
 
-    String url = "https://apgloballimited.com/api/command/getDevice/$id";
+    var carList = await getDeviceList();
+  
+
+    String url = "https://apgloballimited.com/api/command/getDevice/${carList[0]}";
 
     SharedPreferences pre = await SharedPreferences.getInstance(); 
     String token = pre.getString('token');
 
       http.Response response = await http.get(url, headers: {HttpHeaders.authorizationHeader: "Bearer $token"},); 
       SharedPreferences pref = await SharedPreferences.getInstance(); 
+print("Status");
 print(response.statusCode);
 print(response.body);
       if(response.body != null && response.body != '') {
         if(response.statusCode == 200){
           pref.setString('device', response.body);
+          
+        }else{
+         
         }
         
+      }else{
+        
       }
+      
       return response.body;
 
   }
 
-  static Future<dynamic> getDeviceList() async {
+  static Future<dynamic>  getDeviceList() async {
     String url = "https://apgloballimited.com/api/command/getListOfDevices";
 
     SharedPreferences pre = await SharedPreferences.getInstance(); 
