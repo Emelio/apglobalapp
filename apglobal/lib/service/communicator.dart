@@ -35,8 +35,11 @@ class Communicator {
 
     var jsonData = json.encode(data);
 
+    print(jsonData);
+
     http.Response response = await http.post(url, body: jsonData, headers: {HttpHeaders.authorizationHeader: "Bearer $token", "Content-Type": "application/json"});
 
+    print('hi');
     print(response.body);
     print(response.statusCode);
     return response.body;
