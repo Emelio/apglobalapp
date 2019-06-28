@@ -36,19 +36,21 @@ class LoadingScreenExampleState extends State<LoadingScreenExample> {
         print(msg.sender+" : "+ devicePhone.toStringAsFixed(0) );
         print(msg.body);
         print(msg.address);
+
+        String bodyData = msg.body.toLowerCase();
         
         
-        if (msg.body.contains('Tracker is activated')) {
+        if (bodyData.contains('tracker is activated')) {
           
           Communicator.updateStatus("arm", "on", deviceId);
           deviceData['status']['arm'] = "on";
           // change data to string and save it 
 
-          
+          updateBackground(deviceData);
 
           runApp(Home());
 
-        }else if(msg.body.contains('Tracker is deactivated')){
+        }else if(bodyData.contains('tracker is deactivated')){
           
           Communicator.updateStatus("arm", "off", deviceId);
           deviceData['status']['arm'] = "off";
@@ -57,7 +59,7 @@ class LoadingScreenExampleState extends State<LoadingScreenExample> {
 
           runApp(Home());
           
-        }else if(msg.body.contains('lat')) {
+        }else if(bodyData.contains('lat')) {
 
           Map<String, dynamic> map = new Map(); 
           String message = msg.body;
@@ -94,16 +96,16 @@ class LoadingScreenExampleState extends State<LoadingScreenExample> {
 
           runApp(Maps());
 
-        }else if(msg.body.contains("speed OK!")){
+        }else if(bodyData.contains("speed ok!")){
           runApp(AlertOptions());
-        }else if(msg.body.contains("Stop engine Succeed")){
+        }else if(bodyData.contains("stop engine succeed")){
 
           Communicator.updateStatus("power", "on", deviceId);
           deviceData['status']['power'] = "on";
           updateBackground(deviceData);
           runApp(Home());
 
-        }else if(msg.body.contains("Resume engine Succeed")) {
+        }else if(bodyData.contains("resume engine succeed")) {
 
           Communicator.updateStatus("power", "off", deviceId);
           deviceData['status']['power'] = "off";

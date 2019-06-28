@@ -350,11 +350,11 @@ class Homestate extends State<Home> {
                                 String address = "${deviceNumber.toStringAsFixed(0)}";
                                 SmsMessage message; 
                                 if (arm == "on") {
-                                  message = new SmsMessage(address, 'arm$password');
+                                  message = new SmsMessage(address, 'disarm$password');
                                 }else if(arm == "off"){
-                                  message = new SmsMessage(address, 'disarm$password'); 
+                                  message = new SmsMessage(address, 'arm$password');
                                 }else{
-                                  message = new SmsMessage(address, 'disarm$password'); 
+                                  message = new SmsMessage(address, 'arm$password');
                                 }
                                 
                                 message.onStateChanged.listen((state) {
@@ -443,11 +443,11 @@ class Homestate extends State<Home> {
                                 String address = "${deviceNumber.toStringAsFixed(0)}";
                                 SmsMessage message; 
                                 if (power == "on") {
-                                  message = new SmsMessage(address, 'stop$password');
+                                  message = new SmsMessage(address, 'resume$password');
                                 }else if(power == "off"){
-                                  message = new SmsMessage(address, 'resume$password'); 
+                                  message = new SmsMessage(address, 'stop$password');
                                 }else{
-                                  message = new SmsMessage(address, 'resume$password'); 
+                                  message = new SmsMessage(address, 'stop$password');
                                 }
                                 
                                 message.onStateChanged.listen((state) {
