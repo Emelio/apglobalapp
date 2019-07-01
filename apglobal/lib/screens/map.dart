@@ -24,6 +24,14 @@ class MapSampleState extends State<Maps> {
   MapSampleState(){
     Communicator.getTracking().then((result) async {
 
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      var trackingLocalData = json.decode(pref.getString('tracking'));
+
+      double catcheTime = trackingLocalData['time'];
+      double liveTime = result['time'];
+
+      print("$catcheTime vs $liveTime");
+
       Communicator.getDevice();
 
       print(result);

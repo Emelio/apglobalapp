@@ -55,8 +55,8 @@ class Communicator {
     http.Response response = await http.get(url, headers: {HttpHeaders.authorizationHeader: "Bearer $token"}); 
 
     Map<String, dynamic> data = json.decode(response.body);
-    print(data['lat']);
-    print(data['longi']);
+
+    print(data);
     return data;
     
   }
