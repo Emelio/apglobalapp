@@ -83,7 +83,7 @@ class LoadingScreenExampleState extends State<LoadingScreenExample> {
           }
 
           var now = new DateTime.now();
-          map['Time'] = now.millisecondsSinceEpoch;
+          map['Time'] = now.millisecondsSinceEpoch.toDouble();
 
           String trackingData = json.encode(map);
 

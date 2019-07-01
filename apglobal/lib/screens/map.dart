@@ -27,17 +27,29 @@ class MapSampleState extends State<Maps> {
       SharedPreferences pref = await SharedPreferences.getInstance();
       var trackingLocalData = json.decode(pref.getString('tracking'));
 
-      double catcheTime = trackingLocalData['time'];
+      double catcheTime = trackingLocalData['Time'];
       double liveTime = result['time'];
 
-      print("$catcheTime vs $liveTime");
+      print("$catcheTime vs $catcheTime");
+
+      double lat;
+      double longi ;
+
+      if(catcheTime > liveTime){
+        print(trackingLocalData);
+
+         lat = double.parse(trackingLocalData['Lat']);
+         longi = double.parse(trackingLocalData['Longi']);
+      }else{
+        print(result);
+
+        lat = result['lat'];
+        longi = result['longi'];
+      }
 
       Communicator.getDevice();
 
-      print(result);
 
-      double lat = result['lat'];
-      double longi = result['longi'];
 
 
       setState(() {
