@@ -91,12 +91,11 @@ class LoadingScreenExampleState extends State<LoadingScreenExample> {
 
           print(map);
 
-
           Communicator.addTracking(map);
 
           runApp(Maps());
 
-        }else if(bodyData.contains("speed ok!")){
+        }else if(bodyData.contains("speed ok!") || bodyData.contains("quickstop OK") || bodyData.contains("noquickstop OK") || bodyData.contains("move OK")){
           runApp(AlertOptions());
         }else if(bodyData.contains("stop engine succeed")){
 

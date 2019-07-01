@@ -127,7 +127,6 @@ print(response.body);
 
     String url = "https://apgloballimited.com/api/command/updateStatus/$status/$state/$id";
 
-
     http.Response response = await http.get(url, headers: {HttpHeaders.authorizationHeader: "Bearer $token"},);
 
     print(response.body);

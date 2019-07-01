@@ -25,7 +25,7 @@ class Home extends StatefulWidget {
 
 class Homestate extends State<Home> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-  String brand; 
+  String brand = 'Loading';
   double deviceNumber;
   String arm, monitor, powerString, power, password, deviceId = '';
   String carImage = "image/car_outline2.png"; 
@@ -267,6 +267,12 @@ class Homestate extends State<Home> {
            runApp(AlertOptions());
         },
       ),
+              ListTile(
+                title: Row(children: <Widget>[ Padding(padding: EdgeInsets.only(right: 15), child: Icon(Icons.all_out),),Text('Car Care Coming Soon')],),
+                onTap: () {
+
+                },
+              ),
       ListTile(
         title: Row(children: <Widget>[ Padding(padding: EdgeInsets.only(right: 15), child: Icon(Icons.security),),Text('Logout')],),
         onTap: () {
