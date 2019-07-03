@@ -27,15 +27,11 @@ class LoadingScreenExampleState extends State<LoadingScreenExample> {
     getDevice();
     receiver.onSmsReceived.listen((SmsMessage msg) async {
 
-      print(devicePhone.toStringAsFixed(0));
-      print(msg.sender.substring(2));
-      print(msg.body);
+
+      SharedPreferences pref = await SharedPreferences.getInstance();
 
       if (devicePhone.toStringAsFixed(0).contains(msg.sender.substring(2))) {
 
-        print(msg.sender+" : "+ devicePhone.toStringAsFixed(0) );
-        print(msg.body);
-        print(msg.address);
 
         String bodyData = msg.body.toLowerCase();
         
@@ -87,7 +83,11 @@ class LoadingScreenExampleState extends State<LoadingScreenExample> {
           }
 
           var now = new DateTime.now();
-          map['Time'] = now.millisecondsSinceEpoch;
+          map['Time'] = now.millisecondsSinceEpoch.toDouble();
+
+          String trackingData = json.encode(map);
+
+          pref.setString('tracking', trackingData);
 
           print(map);
 

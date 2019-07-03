@@ -29,7 +29,7 @@ class Homestate extends State<Home> {
   double deviceNumber;
   String arm, monitor, powerString, power, password, deviceId = '';
   String carImage = "image/car_outline2.png"; 
-  String place; 
+  String place = 'Loading';
   
 
   Homestate(){
