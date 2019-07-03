@@ -483,7 +483,7 @@ class Homestate extends State<Home> {
                           ],),
                           Column(
                             children: <Widget>[
-                              IconButton(icon: Icon(Icons.tram, color: Colors.white), onPressed: (){}, iconSize: 35,),
+                              IconButton(icon: Icon(Icons.notification_important, color: Colors.white), onPressed: (){}, iconSize: 35,),
                               Padding(
                                 padding: EdgeInsets.only(top: 25, right: 10),
                                 child:IconButton(icon: Icon(Icons.my_location, color: Colors.white), iconSize: 35, onPressed: (){
