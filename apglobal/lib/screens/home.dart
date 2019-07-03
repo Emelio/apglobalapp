@@ -158,23 +158,9 @@ class Homestate extends State<Home> {
        runApp(MyApp());
        print('test');
      }
+     getTracking();
 
-    var placeHolder;
 
-    if(tracking['lat'] != null){
-      // From coordinates
-    final coordinates = new Coordinates(tracking['lat'], tracking['longi']);
-    var addresses = await Geocoder.local.findAddressesFromCoordinates(coordinates);
-    var first = addresses.first;
-     placeHolder = first.addressLine; 
-    print(first.addressLine);
-    }else{
-      placeHolder = "no location data";
-    }
-    
-    setState(() {
-      place = placeHolder;
-    });    
 
     
   }
@@ -194,6 +180,52 @@ class Homestate extends State<Home> {
     return base64Str;
   }
 
+  getTracking(){
+    Communicator.getTracking().then((result) async {
+
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      var trackingLocalData = json.decode(pref.getString('tracking'));
+
+      double catcheTime = trackingLocalData['Time'];
+      double liveTime = result['time'];
+
+      print("$catcheTime vs $catcheTime");
+
+      double lat;
+      double longi ;
+
+      if(catcheTime > liveTime){
+        print(trackingLocalData);
+
+        lat = double.parse(trackingLocalData['Lat']);
+        longi = double.parse(trackingLocalData['Longi']);
+      }else{
+        print(result);
+
+        lat = result['lat'];
+        longi = result['longi'];
+      }
+
+      var placeHolder;
+
+      if(lat != null){
+        // From coordinates
+        final coordinates = new Coordinates(lat, lat);
+        var addresses = await Geocoder.local.findAddressesFromCoordinates(coordinates);
+        var first = addresses.first;
+        placeHolder = first.addressLine;
+        print(first.addressLine);
+      }else{
+        placeHolder = "no location data";
+      }
+
+      setState(() {
+        place = placeHolder;
+      });
+
+
+    });
+  }
 
   heading() {
     return Row(
