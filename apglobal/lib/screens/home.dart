@@ -33,6 +33,9 @@ class Homestate extends State<Home> {
   
 
   Homestate(){
+
+    getDevice(_scaffoldKey.currentContext);
+
     Communicator.getDevice();
     SharedPreferences.getInstance().then((result){
 
@@ -85,7 +88,7 @@ class Homestate extends State<Home> {
 
     });
 
-    getDevice();
+
 
     if(monitor == "on"){
       SmsSender sender = new SmsSender();
@@ -141,22 +144,17 @@ class Homestate extends State<Home> {
     return device;
   }
 
-  getDevice() async {
+  getDevice(BuildContext context) async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     String token = pref.getString('token'); 
     List<String> tokens = token.split('.');
 
-
-
-
     var carList = await Communicator.getDeviceList();
-    var tracking = await Communicator.getTracking();
     await Communicator.getDevice();
 
 
      if(carList == 'login') {
-       runApp(MyApp());
-       print('test');
+       Navigator.pushNamed(context, 'login');
      }
      getTracking();
 
@@ -183,45 +181,74 @@ class Homestate extends State<Home> {
   getTracking(){
     Communicator.getTracking().then((result) async {
 
+
+
       SharedPreferences pref = await SharedPreferences.getInstance();
-      var trackingLocalData = json.decode(pref.getString('tracking'));
 
-      double catcheTime = trackingLocalData['Time'];
-      double liveTime = result['time'];
+      try{
+        var trackingLocalData = json.decode(pref.getString('tracking'));
 
-      print("$catcheTime vs $catcheTime");
 
-      double lat;
-      double longi ;
+          double catcheTime = trackingLocalData['Time'];
+          double liveTime = result['time'];
 
-      if(catcheTime > liveTime){
-        print(trackingLocalData);
+          double lat;
+          double longi ;
 
-        lat = double.parse(trackingLocalData['Lat']);
-        longi = double.parse(trackingLocalData['Longi']);
-      }else{
-        print(result);
+          if(catcheTime > liveTime){
+            print(trackingLocalData);
 
-        lat = result['lat'];
-        longi = result['longi'];
+            lat = double.parse(trackingLocalData['Lat']);
+            longi = double.parse(trackingLocalData['Longi']);
+          }else{
+            print(result);
+
+            lat = result['lat'];
+            longi = result['longi'];
+          }
+
+          var placeHolder;
+
+          if(lat != null){
+            // From coordinates
+            final coordinates = new Coordinates(lat, lat);
+            var addresses = await Geocoder.local.findAddressesFromCoordinates(coordinates);
+            var first = addresses.first;
+            placeHolder = first.addressLine;
+            print(first.addressLine);
+          }else{
+            placeHolder = "no location data";
+          }
+
+          setState(() {
+            place = placeHolder;
+          });
+
+
+
+
+      } catch(e){
+        double lat = result['lat'];
+        double longi = result['longi'];
+
+        var placeHolder;
+
+        if(lat != null){
+          // From coordinates
+          final coordinates = new Coordinates(lat, longi);
+          var addresses = await Geocoder.local.findAddressesFromCoordinates(coordinates);
+          var first = addresses.first;
+          placeHolder = first.addressLine;
+          print(first.addressLine);
+        }else{
+          placeHolder = "no location data";
+        }
+
+        setState(() {
+          place = placeHolder;
+        });
       }
 
-      var placeHolder;
-
-      if(lat != null){
-        // From coordinates
-        final coordinates = new Coordinates(lat, lat);
-        var addresses = await Geocoder.local.findAddressesFromCoordinates(coordinates);
-        var first = addresses.first;
-        placeHolder = first.addressLine;
-        print(first.addressLine);
-      }else{
-        placeHolder = "no location data";
-      }
-
-      setState(() {
-        place = placeHolder;
-      });
 
 
     });
@@ -256,13 +283,12 @@ class Homestate extends State<Home> {
 
 
     // TODO: implement build
-    return MaterialApp(
-      home: Scaffold(
+    return Scaffold(
         appBar: AppBar(centerTitle: true, title: Text("Dashboard"), backgroundColor: Color(0xFF3a94bf), 
         actions: <Widget>[
           IconButton(
                       onPressed: (){
-                        runApp(Maps());
+                        Navigator.popAndPushNamed(context, 'maps');
                       },
                       icon: Icon(Icons.map, color: Colors.white,),
                     )
@@ -287,10 +313,7 @@ class Homestate extends State<Home> {
       ),
       ListTile(
         title: Row(children: <Widget>[ Padding(padding: EdgeInsets.only(right: 15), child: Icon(Icons.attach_money),),Text('Billing')],),
-        onTap: () {
-          
-          // runApp(DeviceList());
-        },
+        onTap: () => Navigator.popAndPushNamed(context, 'billing'),
       ),
       ListTile(
         title: Row(children: <Widget>[ Padding(padding: EdgeInsets.only(right: 15), child: Icon(Icons.add_alert),),Text('Alerts')],),
@@ -563,8 +586,7 @@ class Homestate extends State<Home> {
             )
           ],
         ),
-      )
-    );
+      );
   }
 
 }

@@ -3,6 +3,7 @@ import 'package:apglobal/screens/password.dart';
 import 'package:apglobal/service/communicator.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:apglobal/screens/home.dart';
 
 import 'home.dart';
 
@@ -10,14 +11,6 @@ class MyApp extends StatelessWidget {
 
   var emailController = TextEditingController();
   var passwordController = TextEditingController();
-
-  MyApp(){
-    SharedPreferences.getInstance().then((result){
-      if (result.getString('token') != null) {
-        runApp(Home());
-      }
-    });
-  }
 
   textFieldWidget(String label, bool secure, TextEditingController controller){
     return Container(
@@ -52,9 +45,17 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    SharedPreferences.getInstance().then((result){
+      if (result.getString('token') != null) {
+        Navigator.pushReplacementNamed(context, 'home');
+
+        //runApp(Home());
+      }
+    });
+
     // TODO: implement build
-    return MaterialApp(
-      home: Scaffold(
+    return Scaffold(
         body: Stack(
           children: <Widget>[
             Container(
@@ -80,7 +81,7 @@ print(result);
                       if (result == true){
                         SharedPreferences pre = await SharedPreferences.getInstance();
                         pre.setString('new', 'yes');
-                        runApp(Home());
+                        Navigator.pushReplacementNamed(context, 'home');
                       }
 
                     });
@@ -98,8 +99,7 @@ print(result);
             )
           ],
         ),
-      ),
-    );
+      );
   }
 
 }
