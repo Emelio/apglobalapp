@@ -19,8 +19,6 @@ class AddCard extends StatelessWidget {
       margin: EdgeInsets.only(top: 20, left: 20, right: 20),
       child:
       TextField(
-        obscureText: false,
-        keyboardType: type,
         controller: controller,
         decoration: InputDecoration(
           border: OutlineInputBorder(),
@@ -39,8 +37,8 @@ class AddCard extends StatelessWidget {
         children: <Widget>[
 
           TextfieldObject('Card Number', TextInputType.text, cardNumber),
-          TextfieldObject('Card Expiration Date (MM/YYYY)', TextInputType.datetime, dateis),
-          TextfieldObject('Card CVV', TextInputType.number, cvv),
+          TextfieldObject('Card Expiration Date (MM/YYYY)', TextInputType.text, dateis),
+          TextfieldObject('Card CVV', TextInputType.text, cvv),
           
           Container(
             padding: EdgeInsets.all(25),
