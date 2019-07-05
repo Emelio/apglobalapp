@@ -77,11 +77,11 @@ class MyApp extends StatelessWidget {
                     child: FlatButton(onPressed: () {
 
                     Communicator.login(emailController.text, passwordController.text).then((result) async {
-print(result);
+
                       if (result == true){
                         SharedPreferences pre = await SharedPreferences.getInstance();
                         pre.setString('new', 'yes');
-                        Navigator.pushReplacementNamed(context, 'home');
+                       // Navigator.pushReplacementNamed(context, 'home');
                       }
 
                     });

@@ -27,6 +27,22 @@ class Communicator {
     }
   }
 
+  static Future<String> addCard(Map<String, dynamic> data) async {
+    String url = 'https://apgloballimited.com/api/billing/registerCard';
+
+    SharedPreferences pre = await SharedPreferences.getInstance();
+    String token = pre.getString('token');
+
+    var jsonData = json.encode(data);
+
+    http.Response response = await http.post(url, body: jsonData, headers: {HttpHeaders.authorizationHeader: "Bearer $token", "Content-Type": "application/json"});
+
+    print(response.body);
+    print(response.statusCode);
+    return response.body;
+
+  }
+
   static Future<String> addTracking(Map<String, dynamic> data) async {
     String url = 'https://apgloballimited.com/api/command/addTracking';
 
