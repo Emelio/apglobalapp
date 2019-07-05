@@ -16,7 +16,8 @@ void main() => runApp(MaterialApp(
     'billing': (BuildContext context) => BillingHome(),
     'managecard': (BuildContext context) => ManageCard(),
     'addCard': (BuildContext context) =>  AddCard(),
-    'maps': (BuildContext context) => Maps()},
+    'maps': (BuildContext context) => Maps(),
+  },
   theme: ThemeData(
     backgroundColor: Color(0xFF0081b0),
     primaryColor: Color(0xFF0081b0),

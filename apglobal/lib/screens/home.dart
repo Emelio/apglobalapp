@@ -333,6 +333,7 @@ class Homestate extends State<Home> {
         onTap: () {
           SharedPreferences.getInstance().then((result) {
             result.remove('token');
+
             runApp(MyApp());
           });
         },

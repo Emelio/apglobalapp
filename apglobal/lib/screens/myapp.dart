@@ -81,7 +81,7 @@ class MyApp extends StatelessWidget {
                       if (result == true){
                         SharedPreferences pre = await SharedPreferences.getInstance();
                         pre.setString('new', 'yes');
-                       // Navigator.pushReplacementNamed(context, 'home');
+                        Navigator.pushReplacementNamed(context, 'home');
                       }
 
                     });

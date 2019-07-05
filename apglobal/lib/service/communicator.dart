@@ -10,21 +10,39 @@ import 'package:shared_preferences/shared_preferences.dart';
 class Communicator {
 
   static Future<bool> login(String email, String password) async {
-    String url = 'https://apgloballimited.com/api/users/login';
+    String url = 'https://apgloballimited.com/api/users/login/';
 
-    http.Response response = await http.post(url, body: json.encode({'Email': email.toLowerCase(), 'Password': password}), headers:  {"Content-Type": "application/json"});
+    http.Response response = await http.get(url+email+"/"+password);
 
     print(response.body);
+    print(response.statusCode);
     var jsonbody = json.decode(response.body);
 
     SharedPreferences pref = await SharedPreferences.getInstance();
     pref.setString('token', jsonbody['token']);
+
+
+    print(jsonbody['token']);
   
     if (jsonbody['token'] != null){
       return true;
     }else{
       return false;
     }
+  }
+
+  static Future<String> getCard() async {
+    String url = 'https://apgloballimited.com/api/billing/getCards';
+
+    SharedPreferences pre = await SharedPreferences.getInstance();
+    String token = pre.getString('token');
+
+    http.Response response = await http.get(url, headers: {HttpHeaders.authorizationHeader: "Bearer $token"});
+
+    print(response.body);
+    print(response.statusCode);
+    return response.body;
+
   }
 
   static Future<String> addCard(Map<String, dynamic> data) async {
@@ -41,6 +59,19 @@ class Communicator {
     print(response.statusCode);
     return response.body;
 
+  }
+
+  static Future<String> verifyCard() async {
+    String url = 'api/billing/updateStage/{cardNumber}/{amount}';
+
+    SharedPreferences pre = await SharedPreferences.getInstance();
+    String token = pre.getString('token');
+
+    http.Response response = await http.get(url, headers: {HttpHeaders.authorizationHeader: "Bearer $token"});
+
+    print(response.body);
+    print(response.statusCode);
+    return response.body;
   }
 
   static Future<String> addTracking(Map<String, dynamic> data) async {

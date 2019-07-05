@@ -1,4 +1,6 @@
 
+import 'dart:convert';
+
 import 'package:apglobal/service/communicator.dart';
 import 'package:flutter/material.dart';
 
@@ -50,12 +52,18 @@ class AddCard extends StatelessWidget {
                 paymentInfo['Cvv'] = cvv.text;
                 paymentInfo['CardNumber'] = cardNumber.text;
                 paymentInfo['ExpirationDate'] = dateis.text;
+                paymentInfo['ItemId'] = '';
+                paymentInfo['UserId'] = '';
 
                 var result = await Communicator.addCard(paymentInfo);
 
-                if(result == 'done'){
-                  print(result);
+                Map<String, dynamic> paymentData = json.decode(result);
+
+                if(paymentData['finalStatus'] == 'success'){
+                   Navigator.pop(context);
                 }
+
+                
               },
             ),
           )
