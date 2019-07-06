@@ -38,7 +38,7 @@ class ManageCardState extends State<ManageCard> {
        if(stage == null)
        {
         trueStage = 'Not Verified';
-       }else{
+       }else if(stage == 'verified'){
         trueStage = 'Verified';
        }
 
@@ -95,7 +95,9 @@ class ManageCardState extends State<ManageCard> {
                                  RaisedButton(
                                    child: Text('Save'),
                                    onPressed: (){
-
+                                     // update card 
+                                     Communicator.verifyCard(cardNumber, double.parse(amount.text));
+                                     Navigator.pushReplacementNamed(context, 'managecard');
                                    },
                                  )
                                ],
@@ -110,20 +112,30 @@ class ManageCardState extends State<ManageCard> {
                         context: context,
                         builder: (BuildContext context) {
                           return AlertDialog(
-                            content: Column(
+                            content: Container(
+                              height: 120,
+                              child: Column(
                               children: <Widget>[
                                 Text("Are you sure you want to remove this card?"),
                                 Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: <Widget>[
-                                    FlatButton(
+                                    RaisedButton(
+                                      color: Colors.red,
                                       child: Text("Yes"),
+                                      onPressed: (){
+                                        Communicator.removeCard(cardNumber);
+                                        Navigator.pushReplacementNamed(context, 'managecard');
+                                      },
                                     ),
-                                    FlatButton(
+                                    RaisedButton(
                                       child: Text("No"),
+                                      onPressed: () => Navigator.pop(context),
                                     )
                                   ],
                                 )
                               ],
+                            ),
                             )
                           );
                         }

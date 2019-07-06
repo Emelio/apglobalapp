@@ -13,10 +13,8 @@ import 'package:sms/sms.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:geocoder/geocoder.dart';
 
-import 'alerts.dart';
+
 import 'deviceList.dart';
-import 'map.dart';
-import 'myapp.dart';
 
 class Home extends StatefulWidget {
   
@@ -36,27 +34,39 @@ class Homestate extends State<Home> {
 
     getDevice(_scaffoldKey.currentContext);
 
-    Communicator.getDevice();
-    SharedPreferences.getInstance().then((result){
+    
+    SharedPreferences.getInstance().then((result) async {
 
-    setState(()  {
-       
-      var device = result.getString('device');
+      var device = await Communicator.getDevice();
       var _device;
+
+      if ( device != 'error') {
+        _device = json.decode(device);
+      }else{
+         _device = json.decode(result.getString('device'));
+      }
+
+      
+      
 
       try{
         _device = json.decode(device);
+        print(_device);
       } on NoSuchMethodError {
 
         getNewData();
 
       }
 
-      print(_device);
+      
 
       var image;
       var powerStringtemp;
       var placeHolder;
+
+    setState(()  {
+       
+      
 
     var carState = _device['status']['arm'];
       
@@ -319,7 +329,7 @@ class Homestate extends State<Home> {
         title: Row(children: <Widget>[ Padding(padding: EdgeInsets.only(right: 15), child: Icon(Icons.add_alert),),Text('Alerts')],),
         onTap: () {
           
-           runApp(AlertOptions());
+          Navigator.pushNamed(context, 'alertoptions');
         },
       ),
               ListTile(
@@ -333,8 +343,7 @@ class Homestate extends State<Home> {
         onTap: () {
           SharedPreferences.getInstance().then((result) {
             result.remove('token');
-
-            runApp(MyApp());
+            Navigator.pushNamedAndRemoveUntil(context, 'login', (Route<dynamic> route) => false);
           });
         },
       ),

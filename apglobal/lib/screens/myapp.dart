@@ -12,6 +12,16 @@ class MyApp extends StatelessWidget {
   var emailController = TextEditingController();
   var passwordController = TextEditingController();
 
+  MyApp(){
+    Communicator.getDevice().then((result) async {
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      if (result != 'error') {
+        pref.setString('device', result);
+      }
+      
+    });
+  }
+
   textFieldWidget(String label, bool secure, TextEditingController controller){
     return Container(
         margin: EdgeInsets.all(20),
@@ -46,8 +56,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    SharedPreferences.getInstance().then((result){
+    SharedPreferences.getInstance().then((result) async {
       if (result.getString('token') != null) {
+
+        
         Navigator.pushReplacementNamed(context, 'home');
 
         //runApp(Home());

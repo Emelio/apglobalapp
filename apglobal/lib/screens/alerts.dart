@@ -13,9 +13,8 @@ class AlertOptions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar( title: Text('Alerts'), centerTitle: true, leading: IconButton(icon: Icon(Icons.arrow_back), onPressed: () => runApp(Home()),),),
+    return Scaffold(
+        appBar: AppBar( title: Text('Alerts'), centerTitle: true,),
         body: GridView.count(
   primary: false,
   padding: const EdgeInsets.all(20.0),
@@ -23,7 +22,7 @@ class AlertOptions extends StatelessWidget {
   crossAxisCount: 2,
   children: <Widget>[
     GestureDetector(
-      onTap: ()=> runApp(Speed()),
+      onTap: ()=> Navigator.pushNamed(context, 'speed'),
       child: Container(
         decoration: BoxDecoration(
           border: null,
@@ -45,7 +44,7 @@ class AlertOptions extends StatelessWidget {
         ),
 
     GestureDetector(
-      onTap: ()=> runApp(QuickStop()),
+      onTap: ()=> Navigator.pushNamed(context, 'quickStop'),
     child: Container(
       decoration: BoxDecoration(
       border: null,
@@ -67,7 +66,7 @@ class AlertOptions extends StatelessWidget {
       ),
 
     GestureDetector(
-      onTap: () => runApp(Movement()),
+      onTap: () => Navigator.pushNamed(context, 'movement'),
       child: Container(
         decoration: BoxDecoration(
           border: null,
@@ -90,7 +89,7 @@ class AlertOptions extends StatelessWidget {
 
 
     GestureDetector(
-      onTap: () => runApp(ACC()),
+      onTap: () => Navigator.pushNamed(context, 'acc'),
       child: Container(
         decoration: BoxDecoration(
           border: null,
@@ -112,7 +111,7 @@ class AlertOptions extends StatelessWidget {
     ),
     
     GestureDetector(
-      onTap: () => runApp(Power()),
+      onTap: () => Navigator.pushNamed(context, 'power'),
       child: Container(
         decoration: BoxDecoration(
           border: null,
@@ -137,7 +136,6 @@ class AlertOptions extends StatelessWidget {
 
   ],
 ),
-      ),
     );
   }
 

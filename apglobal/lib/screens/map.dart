@@ -24,7 +24,8 @@ class MapSampleState extends State<Maps> {
   MapSampleState(){
     Communicator.getTracking().then((result) async {
 
-      SharedPreferences pref = await SharedPreferences.getInstance();
+      try {
+        SharedPreferences pref = await SharedPreferences.getInstance();
       var trackingLocalData = json.decode(pref.getString('tracking'));
 
       double catcheTime = trackingLocalData['Time'];
@@ -49,8 +50,32 @@ class MapSampleState extends State<Maps> {
 
       Communicator.getDevice();
 
+      setState(() {
 
+        latLng = LatLng(lat,longi);
+        _goToTheLake(LatLng(lat,longi));
 
+        // creating a new MARKER
+    final Marker marker = Marker(
+      markerId: MarkerId("mark1"),
+      position: latLng,
+      infoWindow: InfoWindow(title: "car 1", snippet: '*'),
+      onTap: () {
+        //_onMarkerTapped(markerId);
+      },
+    );
+
+    markers[MarkerId("mark1")] = marker;
+      });
+
+      } catch (e) {
+        double lat;
+        double longi ;
+
+        lat = result['lat'];
+        longi = result['longi'];
+
+         Communicator.getDevice();
 
       setState(() {
 
@@ -69,6 +94,13 @@ class MapSampleState extends State<Maps> {
 
     markers[MarkerId("mark1")] = marker;
       });
+
+      }
+
+      
+
+
+      
     });
   }
 
@@ -82,9 +114,7 @@ class MapSampleState extends State<Maps> {
       home: Scaffold(
         appBar: AppBar(
           title: Text("Map"), 
-          centerTitle: true,
-          leading: IconButton(icon: Icon(Icons.arrow_back),           
-          onPressed: (){runApp(Home()); },),),
+          centerTitle: true,),
         body: GoogleMap(
           mapType: MapType.hybrid,
           markers: Set<Marker>.of(markers.values),

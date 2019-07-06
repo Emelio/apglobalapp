@@ -45,6 +45,8 @@ class Communicator {
 
   }
 
+  
+
   static Future<String> addCard(Map<String, dynamic> data) async {
     String url = 'https://apgloballimited.com/api/billing/registerCard';
 
@@ -61,8 +63,37 @@ class Communicator {
 
   }
 
-  static Future<String> verifyCard() async {
-    String url = 'api/billing/updateStage/{cardNumber}/{amount}';
+  static Future<String> removeCard(String cardNumber) async {
+
+    String url = 'https://apgloballimited.com/api/billing/removeCard/$cardNumber';
+
+    SharedPreferences pre = await SharedPreferences.getInstance();
+    String token = pre.getString('token');
+
+    http.Response response = await http.get(url, headers: {HttpHeaders.authorizationHeader: "Bearer $token"});
+
+    print(response.body);
+    print(response.statusCode);
+    return response.body;
+  }
+
+  static Future<String> paySub(String type, String cardNumber, String cvv, String expire) async {
+    String url = 'https://apgloballimited.com/api/billing/makeSubscription';
+
+    SharedPreferences pre = await SharedPreferences.getInstance();
+    String token = pre.getString('token');
+    
+    http.Response response = await http.post(url, 
+    body: {'UserId': '', 'ItemId': type, 'CardNumber': cardNumber, 'Cvv': cvv, 'ExpirationDate': expire}, headers: {HttpHeaders.authorizationHeader: "Bearer $token"});
+
+    print(response.body);
+    print(response.statusCode);
+    return response.body;
+
+  }
+
+  static Future<String> verifyCard(String cardNumber, double amount) async {
+    String url = 'https://apgloballimited.com/api/billing/updateStage/$cardNumber/$amount';
 
     SharedPreferences pre = await SharedPreferences.getInstance();
     String token = pre.getString('token');
@@ -112,6 +143,7 @@ class Communicator {
 
     var carList = await getDeviceList();
   
+    print(carList);
 
     String url = "https://apgloballimited.com/api/command/getDevice/${carList[0]}";
 
@@ -126,9 +158,9 @@ print(response.body);
       if(response.body != null && response.body != '') {
         if(response.statusCode == 200){
           pref.setString('device', response.body);
-          
+          return response.body;
         }else{
-         
+         return 'error';
         }
         
       }else{
@@ -147,14 +179,16 @@ print(response.body);
 
     http.Response response = await http.get(url, headers: {HttpHeaders.authorizationHeader: "Bearer $token"},);
 
+    print('hi');
     print(response.statusCode);
+    print(response.body);
 
     if(response.statusCode == 401){
       pre.remove('token');
       return 'login';      
     }else if(response.statusCode == 200) {
       var jsonData = json.decode(response.body);
-
+      print(jsonData);
       return jsonData;
     }else{
       return '';

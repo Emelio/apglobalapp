@@ -1,7 +1,6 @@
 
 import 'dart:convert';
 
-import 'package:apglobal/screens/alerts.dart';
 import 'package:apglobal/service/communicator.dart';
 import 'package:flutter/material.dart';
 import 'package:loading/indicator/ball_pulse_indicator.dart';
@@ -22,6 +21,7 @@ class LoadingScreenExampleState extends State<LoadingScreenExample> {
   double devicePhone; 
   String deviceId; 
   Map<String, dynamic> deviceData;
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   LoadingScreenExampleState() {
     getDevice();
@@ -43,8 +43,7 @@ class LoadingScreenExampleState extends State<LoadingScreenExample> {
           // change data to string and save it 
 
           updateBackground(deviceData);
-
-          runApp(Home());
+          Navigator.popAndPushNamed(context, 'home');
 
         }else if(bodyData.contains('tracker is deactivated')){
           
@@ -53,7 +52,7 @@ class LoadingScreenExampleState extends State<LoadingScreenExample> {
 
           updateBackground(deviceData);
 
-          runApp(Home());
+          Navigator.popAndPushNamed(context, 'home');
           
         }else if(bodyData.contains('lat')) {
 
@@ -93,23 +92,23 @@ class LoadingScreenExampleState extends State<LoadingScreenExample> {
 
           Communicator.addTracking(map);
 
-          runApp(Maps());
+          Navigator.popAndPushNamed(context, 'maps');
 
         }else if(bodyData.contains("speed ok!") || bodyData.contains("quickstop OK") || bodyData.contains("noquickstop OK") || bodyData.contains("move OK")){
-          runApp(AlertOptions());
+          Navigator.pop(context);
         }else if(bodyData.contains("stop engine succeed")){
 
           Communicator.updateStatus("power", "on", deviceId);
           deviceData['status']['power'] = "on";
           updateBackground(deviceData);
-          runApp(Home());
+          Navigator.popAndPushNamed(context, 'home');
 
         }else if(bodyData.contains("resume engine succeed")) {
 
           Communicator.updateStatus("power", "off", deviceId);
           deviceData['status']['power'] = "off";
           updateBackground(deviceData);
-          runApp(Home());
+          Navigator.popAndPushNamed(context, 'home');
         }
 
         
@@ -143,9 +142,8 @@ class LoadingScreenExampleState extends State<LoadingScreenExample> {
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-    return new MaterialApp(
-      title: 'Loading Screen Example',
-      home: Scaffold(
+    return Scaffold(
+      key: _scaffoldKey,
         body: Stack(
           children: <Widget>[
             Container(
@@ -166,8 +164,7 @@ class LoadingScreenExampleState extends State<LoadingScreenExample> {
             )
           ],
         ),
-      ),
-    );
+      );
   }
   
 }

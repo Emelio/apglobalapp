@@ -65,7 +65,7 @@ class BillingHomeState extends State<BillingHome> {
                       Navigator.pushNamed(context, 'managecard');
                     },),
                     GestureDetector(child: buttons("Choose Subscription"), onTap: (){
-
+                      Navigator.pushNamed(context, 'subscription');
                     },),
                   ],
                 ),

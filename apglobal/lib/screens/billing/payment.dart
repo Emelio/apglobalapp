@@ -1,20 +1,21 @@
 
+
+
 import 'dart:convert';
 
 import 'package:apglobal/service/communicator.dart';
 import 'package:flutter/material.dart';
 
-class AddCard extends StatelessWidget {
+class Payment extends StatefulWidget {
+  State<Payment> createState() => PaymentState();
+}
+
+class PaymentState extends State<Payment> {
 
   TextEditingController cardNumber = TextEditingController();
   TextEditingController name = TextEditingController();
   TextEditingController dateis = TextEditingController();
   TextEditingController cvv = TextEditingController();
-  TextEditingController address = TextEditingController();
-  TextEditingController city = TextEditingController();
-  TextEditingController state = TextEditingController();
-  TextEditingController country = TextEditingController();
-
 
   TextfieldObject(String label, TextInputType type, TextEditingController controller) {
     return Container(
@@ -71,7 +72,7 @@ class AddCard extends StatelessWidget {
 
         ],
       ),
-    );
+    );;
   }
-
+  
 }

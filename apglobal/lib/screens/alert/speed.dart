@@ -1,8 +1,6 @@
 
 import 'dart:convert';
 
-import 'package:apglobal/screens/alerts.dart';
-import 'package:apglobal/screens/loading.dart';
 import 'package:apglobal/service/communicator.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -83,9 +81,8 @@ class SpeedState extends State<Speed> {
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(title: Text('Over Speed Alert'), centerTitle: true, leading: IconButton(icon: Icon(Icons.arrow_back), onPressed: () => runApp(AlertOptions()),)),
+    return Scaffold(
+        appBar: AppBar(title: Text('Over Speed Alert'), centerTitle: true, ),
         body: Container(
           margin: EdgeInsets.all(15),
           child:  Column(
@@ -143,7 +140,7 @@ class SpeedState extends State<Speed> {
 
                                   if (state == SmsMessageState.Sent) {
                                     print("SMS is sent!");
-                                    runApp(LoadingScreenExample());
+                                    Navigator.popAndPushNamed(context, 'loading');
                                   } else if (state == SmsMessageState.Delivered) {
                                     print("SMS is delivered!");
                                   }else if(state == SmsMessageState.Fail){
@@ -167,8 +164,7 @@ class SpeedState extends State<Speed> {
             ],
           ),
         )
-      ),
-    );
+      );
   }
 
 }
