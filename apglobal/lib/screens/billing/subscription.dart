@@ -61,14 +61,29 @@ class SubscriptionState extends State<Subscription> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
-                    Padding(
+                    GestureDetector(
+                      onTap: () async {
+                        SharedPreferences pref = await SharedPreferences.getInstance();
+                        pref.setString('subType', 'P1');
+                        Navigator.pushNamed(context, 'payment');
+                      },
+                      child: Padding(
                       padding: EdgeInsets.all(10),
                       child: buttons('300 Commands', '\$2500'),
                     ),
-                    Padding(
-                      padding: EdgeInsets.all(10),
-                      child: buttons('600 Commands', '\$4900'),
-                    )
+                    ),
+                    GestureDetector(
+                      onTap: () async {
+                        SharedPreferences pref = await SharedPreferences.getInstance();
+                        pref.setString('subType', 'P2');
+                        Navigator.pushNamed(context, 'payment');
+                      },
+                      child: Padding(
+                        padding: EdgeInsets.all(10),
+                        child: buttons('600 Commands', '\$4900'),
+                      ),
+                    ),
+                    
                   ],
                 )
               ],

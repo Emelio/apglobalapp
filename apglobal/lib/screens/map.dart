@@ -24,9 +24,21 @@ class MapSampleState extends State<Maps> {
   MapSampleState(){
     Communicator.getTracking().then((result) async {
 
+      
       try {
-        SharedPreferences pref = await SharedPreferences.getInstance();
-      var trackingLocalData = json.decode(pref.getString('tracking'));
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      var locatData = pref.getString('tracking'); 
+      
+      var trackingLocalData; 
+
+      if(locatData != null){
+        trackingLocalData = json.decode(locatData);
+      }else{
+        trackingLocalData['Time'] = 0;
+      }
+      
+
+      print(trackingLocalData);
 
       double catcheTime = trackingLocalData['Time'];
       double liveTime = result['time'];
@@ -42,7 +54,7 @@ class MapSampleState extends State<Maps> {
          lat = double.parse(trackingLocalData['Lat']);
          longi = double.parse(trackingLocalData['Longi']);
       }else{
-        print(result);
+
 
         lat = result['lat'];
         longi = result['longi'];
@@ -110,11 +122,11 @@ class MapSampleState extends State<Maps> {
   Widget build(BuildContext context) {
     print(latLng);
     // TODO: implement build
-    return MaterialApp(
-      home: Scaffold(
+    return Scaffold(
         appBar: AppBar(
           title: Text("Map"), 
-          centerTitle: true,),
+          centerTitle: true,
+          leading: IconButton(icon: Icon(Icons.arrow_back), onPressed: () => Navigator.popAndPushNamed(context, 'home'),),),
         body: GoogleMap(
           mapType: MapType.hybrid,
           markers: Set<Marker>.of(markers.values),
@@ -123,8 +135,7 @@ class MapSampleState extends State<Maps> {
             _controller.complete(controller);
           },
         ),
-      ),
-    );
+      );
   }
 
   Future<void> _goToTheLake(LatLng newLat) async {

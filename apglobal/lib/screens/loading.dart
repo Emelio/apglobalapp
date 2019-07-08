@@ -8,9 +8,6 @@ import 'package:loading/loading.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sms/sms.dart';
 
-import 'home.dart';
-import 'map.dart';
-
 class LoadingScreenExample extends StatefulWidget {
   @override
   LoadingScreenExampleState createState() => LoadingScreenExampleState();

@@ -2,7 +2,6 @@
 import 'package:crypto/crypto.dart';
 import 'dart:convert';
 
-import 'package:apglobal/screens/loading.dart';
 import 'package:apglobal/service/communicator.dart';
 import 'package:flutter/material.dart';
 import "dart:ui" as ui;
@@ -221,7 +220,7 @@ class Homestate extends State<Home> {
 
           if(lat != null){
             // From coordinates
-            final coordinates = new Coordinates(lat, lat);
+            final coordinates = new Coordinates(lat, longi);
             var addresses = await Geocoder.local.findAddressesFromCoordinates(coordinates);
             var first = addresses.first;
             placeHolder = first.addressLine;
@@ -432,7 +431,7 @@ class Homestate extends State<Home> {
 
                                   if (state == SmsMessageState.Sent) {
                                     print("SMS is sent!");
-                                    runApp(LoadingScreenExample());
+                                    Navigator.popAndPushNamed(context, 'loading');;
                                   } else if (state == SmsMessageState.Delivered) {
                                     print("SMS is delivered!");
                                   }else if(state == SmsMessageState.Fail){
@@ -525,7 +524,7 @@ class Homestate extends State<Home> {
 
                                   if (state == SmsMessageState.Sent) {
                                     print("SMS is sent!");
-                                    runApp(LoadingScreenExample());
+                                    Navigator.popAndPushNamed(context, 'loading');
                                   } else if (state == SmsMessageState.Delivered) {
                                     print("SMS is delivered!");
                                   }else if(state == SmsMessageState.Fail){
@@ -561,7 +560,7 @@ class Homestate extends State<Home> {
 
                                   if (state == SmsMessageState.Sent) {
                                     print("SMS is sent!");
-                                    runApp(LoadingScreenExample());
+                                    Navigator.popAndPushNamed(context, 'loading');
                                   } else if (state == SmsMessageState.Delivered) {
                                     print("SMS is delivered!");
                                   }else if(state == SmsMessageState.Fail){
