@@ -97,7 +97,7 @@ class ManageCardState extends State<ManageCard> {
                                    onPressed: (){
                                      // update card 
                                      Communicator.verifyCard(cardNumber, double.parse(amount.text));
-                                     Navigator.pushReplacementNamed(context, 'managecard');
+                                     Navigator.pushReplacementNamed(context, 'billing');
                                    },
                                  )
                                ],

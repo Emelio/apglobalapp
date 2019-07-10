@@ -65,7 +65,7 @@ class SubscriptionState extends State<Subscription> {
                       onTap: () async {
                         SharedPreferences pref = await SharedPreferences.getInstance();
                         pref.setString('subType', 'P1');
-                        Navigator.pushNamed(context, 'payment');
+                        Navigator.pushNamed(context, 'paySub');
                       },
                       child: Padding(
                       padding: EdgeInsets.all(10),
@@ -76,7 +76,7 @@ class SubscriptionState extends State<Subscription> {
                       onTap: () async {
                         SharedPreferences pref = await SharedPreferences.getInstance();
                         pref.setString('subType', 'P2');
-                        Navigator.pushNamed(context, 'payment');
+                        Navigator.pushNamed(context, 'paySub');
                       },
                       child: Padding(
                         padding: EdgeInsets.all(10),
@@ -104,7 +104,7 @@ class SubscriptionState extends State<Subscription> {
                         onTap: () async {
                           SharedPreferences pref = await SharedPreferences.getInstance();
                           pref.setString('subType', 'U1');
-                          Navigator.pushNamed(context, 'payment');
+                          Navigator.pushNamed(context, 'paySub');
                         },
                         child: Padding(
                           padding: EdgeInsets.all(10),
@@ -115,7 +115,7 @@ class SubscriptionState extends State<Subscription> {
                       onTap: () async {
                         SharedPreferences pref = await SharedPreferences.getInstance();
                           pref.setString('subType', 'U2');
-                          Navigator.pushNamed(context, 'payment');
+                          Navigator.pushNamed(context, 'paySub');
                       },
                       child: Padding(
                       padding: EdgeInsets.all(10),

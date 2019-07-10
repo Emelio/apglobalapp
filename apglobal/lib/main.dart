@@ -9,6 +9,7 @@ import 'package:apglobal/screens/billing/addcard.dart';
 import 'package:apglobal/screens/billing/home.dart';
 import 'package:apglobal/screens/billing/manage.dart';
 import 'package:apglobal/screens/billing/payment.dart';
+import 'package:apglobal/screens/billing/paysub.dart';
 import 'package:apglobal/screens/billing/subscription.dart';
 import 'package:apglobal/screens/home.dart';
 import 'package:apglobal/screens/loading.dart';
@@ -25,6 +26,7 @@ void main() => runApp(MaterialApp(
     'billing': (BuildContext context) => BillingHome(),
     'subscription': (BuildContext context) => Subscription(),
     'payment': (BuildContext context) => Payment(),
+    'paySub': (BuildContext context) => PaySub(),
     'managecard': (BuildContext context) => ManageCard(),
     'addCard': (BuildContext context) =>  AddCard(),
     'maps': (BuildContext context) => Maps(),

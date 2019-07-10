@@ -73,8 +73,8 @@ class BillingHomeState extends State<BillingHome> {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
-                    buttons("Order Device"),
-                    buttons("Car Care Service"),
+                    buttons("Order Device (Coming soon)"),
+                    buttons("Car Care (Coming soon)"),
                   ],
                 )
               ],

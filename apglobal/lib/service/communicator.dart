@@ -100,6 +100,7 @@ class Communicator {
 
     http.Response response = await http.get(url, headers: {HttpHeaders.authorizationHeader: "Bearer $token"});
 
+    print(cardNumber);
     print(response.body);
     print(response.statusCode);
     return response.body;
@@ -277,6 +278,21 @@ print(response.body);
     var bytes = utf8.encode(string);
     var base64Str = base64.encode(bytes);
     return base64Str; 
+  }
+
+  static Future<String> payForSubscription(Map<String, dynamic> map) async {
+    String url = 'https://apgloballimited.com/api/billing/makeSubscription';
+
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String token = pref.getString('token');
+
+
+    http.Response response = await http.post(url, body: json.encode(map), headers: {HttpHeaders.authorizationHeader: "Bearer $token", "Content-Type": "application/json"},);
+
+    print(response.statusCode);
+    print(response.body);
+    return response.body;
+
   }
 
 }

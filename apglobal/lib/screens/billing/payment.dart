@@ -35,7 +35,7 @@ class PaymentState extends State<Payment> {
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(title: Text("Payment"),),
       body: ListView(
         children: <Widget>[
 
