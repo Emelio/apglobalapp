@@ -17,19 +17,6 @@ class PaymentState extends State<Payment> {
   TextEditingController dateis = TextEditingController();
   TextEditingController cvv = TextEditingController();
 
-  TextfieldObject(String label, TextInputType type, TextEditingController controller) {
-    return Container(
-      margin: EdgeInsets.only(top: 20, left: 20, right: 20),
-      child:
-      TextField(
-        controller: controller,
-        decoration: InputDecoration(
-          border: OutlineInputBorder(),
-          labelText: '$label',
-        ),
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,10 +26,42 @@ class PaymentState extends State<Payment> {
       body: ListView(
         children: <Widget>[
 
-          TextfieldObject('Card Number', TextInputType.text, cardNumber),
-          TextfieldObject('Card Expiration Date (MM/YYYY)', TextInputType.text, dateis),
-          TextfieldObject('Card CVV', TextInputType.text, cvv),
-          
+      Container(
+      margin: EdgeInsets.only(top: 20, left: 20, right: 20),
+      child:
+      TextField(
+        controller: cardNumber,
+        decoration: InputDecoration(
+          border: OutlineInputBorder(),
+          labelText: 'Card Number',
+        ),
+      ),
+    ),
+
+    Container(
+    margin: EdgeInsets.only(top: 20, left: 20, right: 20),
+    child:
+    TextField(
+    controller: dateis,
+    decoration: InputDecoration(
+    border: OutlineInputBorder(),
+    labelText: 'Card Expiration Date (MM/YYYY)',
+    ),
+    ),
+    ),
+
+    Container(
+    margin: EdgeInsets.only(top: 20, left: 20, right: 20),
+    child:
+    TextField(
+    controller: cvv,
+    decoration: InputDecoration(
+    border: OutlineInputBorder(),
+    labelText: 'Card CVV',
+    ),
+    ),
+    ),
+
           Container(
             padding: EdgeInsets.all(25),
             child: RaisedButton(

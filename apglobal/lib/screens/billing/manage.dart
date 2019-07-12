@@ -42,58 +42,54 @@ class ManageCardState extends State<ManageCard> {
         trueStage = 'Verified';
        }
 
-        item.add(Container(
-            padding: EdgeInsets.symmetric(vertical: 20, horizontal: 12),
-            margin: EdgeInsets.all(15),
-            decoration: BoxDecoration(
-              borderRadius: new BorderRadius.only(
-                  topLeft: const Radius.circular(10.0),
-                  topRight: const Radius.circular(10.0)),
-              // Box decoration takes a gradient
-              gradient: LinearGradient(
-                // Where the linear gradient begins and ends
-                begin: Alignment.topRight,
-                end: Alignment.bottomLeft,
-                // Add one stop for each color. Stops should increase from 0 to 1
-                stops: [0.1, 0.5, 0.7, 0.9],
-                colors: [
-                  // Colors are easy thanks to Flutter's Colors class.
-                  Colors.blue[800],
-                  Colors.blue[600],
-                  Colors.blue[600],
-                  Colors.blue[800],
-                ],
-              ),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
+        item.add(Card(
+            margin: EdgeInsets.only(top: 15, left: 15, right: 15),
+            color: Color(0xFF0081b0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                Text('***********${cardNumber.substring(cardNumber.length - 4)}', style: TextStyle(color: Colors.white, fontSize: 20),),
-                Row(
+                Padding(
+                  padding: EdgeInsets.only(left: 20),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text('Master Card', style: TextStyle(color: Colors.white, fontSize: 16),),
+                Text('***********${cardNumber.substring(cardNumber.length - 4)}', style: TextStyle(color: Colors.white, fontSize: 14),),
+                Text('Status: $trueStage', style: TextStyle(color: Colors.white),),
+              ],
+            ),
+            ),
+                Column(
                   mainAxisAlignment: MainAxisAlignment.end,
-                  children: <Widget>[
-                    Text('Status: $trueStage', style: TextStyle(color: Colors.white),),
-                   
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
                      IconButton(onPressed: (){
                        showDialog(
                          context: context,
                          builder: (BuildContext context) {
                            return AlertDialog(
+                             backgroundColor: Colors.grey[100],
                              content: Container(
-                               height: 180,
+                               height: 200,
                                child: Column(
+                                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                children: <Widget>[
-                                 Text('Please provide the amount that was charged on your card.'),
+                                 Text('Please provide the amount that was charged on your card.', textAlign: TextAlign.center,),
                                  TextField(
+                                   decoration: InputDecoration(
+                                     filled: true,
+                                     fillColor: Colors.white,
+                                       border: new OutlineInputBorder(
+                                         borderRadius: const BorderRadius.all(
+                                           const Radius.circular(7.0),
+                                         ),
+                                       ),
+                                       hintText: 'Eg 2.35'
+                                   ),
                                    controller: amount,
                                  ),
                                  RaisedButton(
-                                   child: Text('Save'),
+                                   child: Text('Save', style: TextStyle(color: Colors.white),),
                                    onPressed: (){
                                      // update card 
                                      Communicator.verifyCard(cardNumber, double.parse(amount.text));
@@ -113,7 +109,7 @@ class ManageCardState extends State<ManageCard> {
                         builder: (BuildContext context) {
                           return AlertDialog(
                             content: Container(
-                              height: 120,
+                              color: Colors.grey[500],
                               child: Column(
                               children: <Widget>[
                                 Text("Are you sure you want to remove this card?"),
@@ -164,7 +160,9 @@ class ManageCardState extends State<ManageCard> {
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
-      appBar: AppBar(title: Text('Cards'), centerTitle: true,),
+      appBar: AppBar(title: Text('BILLING'), centerTitle: true,
+          bottom: PreferredSize(child: Padding(padding: EdgeInsets.symmetric(vertical: 20), child: Text('Add card by clicking on the "+" icon', style: TextStyle(color: Colors.white, fontSize: 14)),),
+              preferredSize: Size.fromHeight(60.0))),
       body: ListView(
         children: cards,
       ),
