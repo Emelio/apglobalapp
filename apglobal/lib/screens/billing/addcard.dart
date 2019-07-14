@@ -4,26 +4,29 @@ import 'dart:convert';
 import 'package:apglobal/service/communicator.dart';
 import 'package:flutter/material.dart';
 
-class AddCard extends StatelessWidget {
+class AddCard extends StatefulWidget {
+  State<AddCard> createState() => AddCardState();
+}
+
+class AddCardState extends State<AddCard> {
 
   TextEditingController cardNumber = TextEditingController();
   TextEditingController name = TextEditingController();
   TextEditingController dateis = TextEditingController();
   TextEditingController cvv = TextEditingController();
-  TextEditingController address = TextEditingController();
-  TextEditingController city = TextEditingController();
-  TextEditingController state = TextEditingController();
-  TextEditingController country = TextEditingController();
 
 
-  TextfieldObject(String label, TextInputType type, TextEditingController controller) {
+  TextfieldObject(String label, TextEditingController controllers) {
     return Container(
+      color: Colors.white,
       margin: EdgeInsets.only(top: 20, left: 20, right: 20),
       child:
       TextField(
-        controller: controller,
+        
+        controller: controllers,
         decoration: InputDecoration(
           border: OutlineInputBorder(),
+          contentPadding: EdgeInsets.all(14),
           labelText: '$label',
         ),
       ),
@@ -34,19 +37,23 @@ class AddCard extends StatelessWidget {
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
-      appBar: AppBar(),
+      backgroundColor: Colors.grey[300],
+      appBar: AppBar(title: Text('Payment Details'), centerTitle: true,),
       body: ListView(
         children: <Widget>[
 
-          TextfieldObject('Card Number', TextInputType.text, cardNumber),
-          TextfieldObject('Card Expiration Date (MM/YYYY)', TextInputType.text, dateis),
-          TextfieldObject('Card CVV', TextInputType.text, cvv),
+          TextfieldObject('Card Number', cardNumber),
+          TextfieldObject('Card Expiration Date (MM/YYYY)', dateis),
+          TextfieldObject('Card CVV', cvv),
           
           Container(
             padding: EdgeInsets.all(25),
             child: RaisedButton(
               child: Text('Add Card', style: TextStyle(color: Colors.white),),
               onPressed: () async {
+
+                
+
                 Map<String, dynamic> paymentInfo = Map<String, dynamic>();
 
                 paymentInfo['Cvv'] = cvv.text;

@@ -221,7 +221,7 @@ class Homestate extends State<Home> {
           if(lat != null){
             // From coordinates
             final coordinates = new Coordinates(lat, longi);
-            var addresses = await Geocoder.local.findAddressesFromCoordinates(coordinates);
+            var addresses = await Geocoder.google("AIzaSyD9QV-Hdz5bxRAiE1goVUiMsbHF039q_N0").findAddressesFromCoordinates(coordinates);
             var first = addresses.first;
             placeHolder = first.addressLine;
             print(first.addressLine);
@@ -245,7 +245,7 @@ class Homestate extends State<Home> {
         if(lat != null){
           // From coordinates
           final coordinates = new Coordinates(lat, longi);
-          var addresses = await Geocoder.local.findAddressesFromCoordinates(coordinates);
+          var addresses = await Geocoder.google("AIzaSyD9QV-Hdz5bxRAiE1goVUiMsbHF039q_N0").findAddressesFromCoordinates(coordinates);
           var first = addresses.first;
           placeHolder = first.addressLine;
           print(first.addressLine);

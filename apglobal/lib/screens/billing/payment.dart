@@ -1,6 +1,4 @@
 
-
-
 import 'dart:convert';
 
 import 'package:apglobal/service/communicator.dart';
@@ -11,11 +9,15 @@ class Payment extends StatefulWidget {
 }
 
 class PaymentState extends State<Payment> {
+//
+ TextEditingController cardNumber = TextEditingController();
+ TextEditingController dateis = TextEditingController();
+ TextEditingController cvv = TextEditingController();
 
-  TextEditingController cardNumber = TextEditingController();
-  TextEditingController name = TextEditingController();
-  TextEditingController dateis = TextEditingController();
-  TextEditingController cvv = TextEditingController();
+
+  final cardNumberNode = FocusNode();
+  final nodeTwo = FocusNode();
+  final _oldPWFN = FocusNode();
 
 
   @override
@@ -30,7 +32,7 @@ class PaymentState extends State<Payment> {
       margin: EdgeInsets.only(top: 20, left: 20, right: 20),
       child:
       TextField(
-        controller: cardNumber,
+        focusNode: cardNumberNode,
         decoration: InputDecoration(
           border: OutlineInputBorder(),
           labelText: 'Card Number',
@@ -38,29 +40,29 @@ class PaymentState extends State<Payment> {
       ),
     ),
 
-    Container(
-    margin: EdgeInsets.only(top: 20, left: 20, right: 20),
-    child:
-    TextField(
-    controller: dateis,
-    decoration: InputDecoration(
-    border: OutlineInputBorder(),
-    labelText: 'Card Expiration Date (MM/YYYY)',
-    ),
-    ),
-    ),
+   Container(
+   margin: EdgeInsets.only(top: 20, left: 20, right: 20),
+   child:
+   TextField(
 
-    Container(
-    margin: EdgeInsets.only(top: 20, left: 20, right: 20),
-    child:
-    TextField(
-    controller: cvv,
-    decoration: InputDecoration(
-    border: OutlineInputBorder(),
-    labelText: 'Card CVV',
-    ),
-    ),
-    ),
+   decoration: InputDecoration(
+   border: OutlineInputBorder(),
+   labelText: 'Card Expiration Date (MM/YYYY)',
+   ),
+   ),
+   ),
+
+   Container(
+   margin: EdgeInsets.only(top: 20, left: 20, right: 20),
+   child:
+   TextField(
+
+   decoration: InputDecoration(
+   border: OutlineInputBorder(),
+   labelText: 'Card CVV',
+   ),
+   ),
+   ),
 
           Container(
             padding: EdgeInsets.all(25),
@@ -69,9 +71,9 @@ class PaymentState extends State<Payment> {
               onPressed: () async {
                 Map<String, dynamic> paymentInfo = Map<String, dynamic>();
 
-                paymentInfo['Cvv'] = cvv.text;
-                paymentInfo['CardNumber'] = cardNumber.text;
-                paymentInfo['ExpirationDate'] = dateis.text;
+               paymentInfo['Cvv'] = cvv.text;
+               paymentInfo['CardNumber'] = cardNumber.text;
+               paymentInfo['ExpirationDate'] = dateis.text;
                 paymentInfo['ItemId'] = '';
                 paymentInfo['UserId'] = '';
 

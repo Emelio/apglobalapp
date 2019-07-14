@@ -54,7 +54,7 @@ class ManageCardState extends State<ManageCard> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Text('Master Card', style: TextStyle(color: Colors.white, fontSize: 16),),
+                //Text('Master Card', style: TextStyle(color: Colors.white, fontSize: 16),),
                 Text('***********${cardNumber.substring(cardNumber.length - 4)}', style: TextStyle(color: Colors.white, fontSize: 14),),
                 Text('Status: $trueStage', style: TextStyle(color: Colors.white),),
               ],
