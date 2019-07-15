@@ -18,9 +18,7 @@ class ManageCardState extends State<ManageCard> {
   }
 
   listofCards() async {
-   String cardsString = await Communicator.getCard();
-
-   List<dynamic> cardsList = json.decode(cardsString); 
+  List<dynamic> cardsList = await Communicator.getCard();
    
    List<Widget> item = List<Widget>(); 
    for (var i = 0; i < cardsList.length; i++) {

@@ -1,4 +1,5 @@
 
+import 'package:apglobal/service/communicator.dart';
 import 'package:flutter/material.dart';
 
 class BillingHome extends StatefulWidget {
@@ -7,12 +8,27 @@ class BillingHome extends StatefulWidget {
 
 class BillingHomeState extends State<BillingHome> {
 
+  String subscriptionNote; 
+
+  BillingHomeState() 
+  {
+    Communicator.subscription().then((result){
+      if(result['Type'] == 'PayAsYouGo') {
+        subscriptionNote = 'You have ${result['commands']} remaining';
+      }else if(result['Type'] == 'Unlimited') {
+        subscriptionNote = 'Expires on ${result['expirationDate']} remaining';
+      }
+    });
+  }
+
+  
+
   buttons(String name, String section) {
 
     return Container(
       width: 120,
       height: 60,
-      child: RaisedButton(onPressed: (){
+      child: RaisedButton(onPressed: () {
         switch(section){
           case 'manage':
             Navigator.pushNamed(context, 'managecard');
@@ -47,7 +63,7 @@ class BillingHomeState extends State<BillingHome> {
         bottom: PreferredSize(child: Padding(padding: EdgeInsets.symmetric(vertical: 10), child:
         Column(children: <Widget>[
         Text('Subscription Status', style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),),
-          Text('Expires March 12, 2018', style: TextStyle(color: Colors.white, fontSize: 14))
+          Text('$subscriptionNote', style: TextStyle(color: Colors.white, fontSize: 14))
           ],),),
             preferredSize: Size.fromHeight(60.0)),),
         body: Container(

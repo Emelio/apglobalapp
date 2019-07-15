@@ -31,7 +31,7 @@ class Communicator {
     }
   }
 
-  static Future<String> getCard() async {
+  static Future<List<dynamic>> getCard() async {
     String url = 'https://apgloballimited.com/api/billing/getCards';
 
     SharedPreferences pre = await SharedPreferences.getInstance();
@@ -41,7 +41,25 @@ class Communicator {
 
     print(response.body);
     print(response.statusCode);
-    return response.body;
+
+    List<dynamic> cards = json.decode(response.body);
+    return cards;
+
+  }
+
+  static Future<Map<String, dynamic>> subscription() async {
+    String url = 'https://apgloballimited.com/api/billing/getSunscription';
+
+     SharedPreferences pre = await SharedPreferences.getInstance();
+    String token = pre.getString('token');
+
+    http.Response response = await http.get(url, headers: {HttpHeaders.authorizationHeader: "Bearer $token"});
+
+    print(response.body);
+
+    Map<String, dynamic> map = json.decode(response.body);
+
+    return map;
 
   }
 
@@ -285,6 +303,7 @@ print(response.body);
 
     SharedPreferences pref = await SharedPreferences.getInstance();
     String token = pref.getString('token');
+
 
 
     http.Response response = await http.post(url, body: json.encode(map), headers: {HttpHeaders.authorizationHeader: "Bearer $token", "Content-Type": "application/json"},);

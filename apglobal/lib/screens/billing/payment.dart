@@ -13,6 +13,7 @@ class PaymentState extends State<Payment> {
  TextEditingController cardNumber = TextEditingController();
  TextEditingController dateis = TextEditingController();
  TextEditingController cvv = TextEditingController();
+ String note = '';
 
 
   final cardNumberNode = FocusNode();
@@ -27,7 +28,7 @@ class PaymentState extends State<Payment> {
       appBar: AppBar(title: Text("Payment"),),
       body: ListView(
         children: <Widget>[
-
+        Text('$note', textAlign: TextAlign.center,),
       Container(
       margin: EdgeInsets.only(top: 20, left: 20, right: 20),
       child:
@@ -69,6 +70,11 @@ class PaymentState extends State<Payment> {
             child: RaisedButton(
               child: Text('Add Card', style: TextStyle(color: Colors.white),),
               onPressed: () async {
+
+              setState(() {
+              note = "payment is currently processing, please wait"; 
+              });
+
                 Map<String, dynamic> paymentInfo = Map<String, dynamic>();
 
                paymentInfo['Cvv'] = cvv.text;
