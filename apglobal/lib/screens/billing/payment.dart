@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:apglobal/service/communicator.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class Payment extends StatefulWidget {
   State<Payment> createState() => PaymentState();
@@ -19,6 +20,7 @@ class PaymentState extends State<Payment> {
   final cardNumberNode = FocusNode();
   final nodeTwo = FocusNode();
   final _oldPWFN = FocusNode();
+
 
 
   @override
@@ -83,13 +85,13 @@ class PaymentState extends State<Payment> {
                 paymentInfo['ItemId'] = '';
                 paymentInfo['UserId'] = '';
 
-                var result = await Communicator.addCard(paymentInfo);
+               // var result = await Communicator.addCard(paymentInfo);
 
-                Map<String, dynamic> paymentData = json.decode(result);
+               // Map<String, dynamic> paymentData = json.decode(result);
 
-                if(paymentData['finalStatus'] == 'success'){
-                   Navigator.popAndPushNamed(context, 'managecard');
-                }
+//                if(paymentData['finalStatus'] == 'success'){
+//                   Navigator.popAndPushNamed(context, 'managecard');
+//                }
 
                 
               },
@@ -99,7 +101,7 @@ class PaymentState extends State<Payment> {
 
         ],
       ),
-    );;
+    );
   }
   
 }

@@ -9,8 +9,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class Communicator {
 
+  static String baseUrl = 'https://apgloballimited.com/';
+
   static Future<bool> login(String email, String password) async {
-    String url = 'https://apgloballimited.com/api/users/login/';
+    String url = baseUrl+'api/users/login/';
 
     http.Response response = await http.get(url+email+"/"+password);
 
@@ -32,7 +34,7 @@ class Communicator {
   }
 
   static Future<List<dynamic>> getCard() async {
-    String url = 'https://apgloballimited.com/api/billing/getCards';
+    String url = baseUrl+'api/billing/getCards';
 
     SharedPreferences pre = await SharedPreferences.getInstance();
     String token = pre.getString('token');
@@ -48,7 +50,7 @@ class Communicator {
   }
 
   static Future<Map<String, dynamic>> subscription() async {
-    String url = 'https://apgloballimited.com/api/billing/getSunscription';
+    String url = baseUrl+'api/billing/getSunscription';
 
      SharedPreferences pre = await SharedPreferences.getInstance();
     String token = pre.getString('token');
@@ -66,7 +68,7 @@ class Communicator {
   
 
   static Future<String> addCard(Map<String, dynamic> data) async {
-    String url = 'https://apgloballimited.com/api/billing/registerCard';
+    String url = baseUrl+'api/billing/registerCard';
 
     SharedPreferences pre = await SharedPreferences.getInstance();
     String token = pre.getString('token');
@@ -83,7 +85,7 @@ class Communicator {
 
   static Future<String> removeCard(String cardNumber) async {
 
-    String url = 'https://apgloballimited.com/api/billing/removeCard/$cardNumber';
+    String url = baseUrl+'api/billing/removeCard/$cardNumber';
 
     SharedPreferences pre = await SharedPreferences.getInstance();
     String token = pre.getString('token');
@@ -96,7 +98,7 @@ class Communicator {
   }
 
   static Future<String> paySub(String type, String cardNumber, String cvv, String expire) async {
-    String url = 'https://apgloballimited.com/api/billing/makeSubscription';
+    String url = baseUrl+'api/billing/makeSubscription';
 
     SharedPreferences pre = await SharedPreferences.getInstance();
     String token = pre.getString('token');
@@ -111,7 +113,7 @@ class Communicator {
   }
 
   static Future<String> verifyCard(String cardNumber, double amount) async {
-    String url = 'https://apgloballimited.com/api/billing/updateStage/$cardNumber/$amount';
+    String url = baseUrl+'api/billing/updateStage/$cardNumber/$amount';
 
     SharedPreferences pre = await SharedPreferences.getInstance();
     String token = pre.getString('token');
@@ -125,7 +127,7 @@ class Communicator {
   }
 
   static Future<String> addTracking(Map<String, dynamic> data) async {
-    String url = 'https://apgloballimited.com/api/command/addTracking';
+    String url = baseUrl+'api/command/addTracking';
 
     SharedPreferences pre = await SharedPreferences.getInstance(); 
     String token = pre.getString('token');
@@ -147,7 +149,7 @@ class Communicator {
 
     SharedPreferences pre = await SharedPreferences.getInstance(); 
     String token = pre.getString('token');
-    String url = 'https://apgloballimited.com/api/command/getTracking';
+    String url = baseUrl+'api/command/getTracking';
 
     http.Response response = await http.get(url, headers: {HttpHeaders.authorizationHeader: "Bearer $token"}); 
 
@@ -164,7 +166,7 @@ class Communicator {
   
     print(carList);
 
-    String url = "https://apgloballimited.com/api/command/getDevice/${carList[0]}";
+    String url = baseUrl+"api/command/getDevice/${carList[0]}";
 
     SharedPreferences pre = await SharedPreferences.getInstance(); 
     String token = pre.getString('token');
@@ -191,7 +193,7 @@ print(response.body);
   }
 
   static Future<dynamic>  getDeviceList() async {
-    String url = "https://apgloballimited.com/api/command/getListOfDevices";
+    String url = baseUrl+"api/command/getListOfDevices";
 
     SharedPreferences pre = await SharedPreferences.getInstance(); 
     String token = pre.getString('token');
@@ -225,7 +227,7 @@ print(response.body);
     Map<String, dynamic> map = json.decode(userId);
     String user = map['nameid'];
 
-    String url = "https://apgloballimited.com/api/command/updateStatus/$status/$state/$id";
+    String url = baseUrl+"api/command/updateStatus/$status/$state/$id";
 
     http.Response response = await http.get(url, headers: {HttpHeaders.authorizationHeader: "Bearer $token"},);
 
@@ -242,7 +244,7 @@ print(response.body);
 
   static Future<String> resetPassword(String email) async {
 
-    String url = "https://apgloballimited.com/api/users/resetpassword/$email/0";
+    String url = baseUrl+"api/users/resetpassword/$email/0";
 
     SharedPreferences pref = await SharedPreferences.getInstance();
     pref.setString('email', email);
@@ -264,7 +266,7 @@ print(response.body);
     print(code);
     print(base);
 
-    String url = 'https://apgloballimited.com/api/users/updatePassword/$password/$base';
+    String url = baseUrl+'api/users/updatePassword/$password/$base';
 
     http.Response response = await http.get(url);
 
@@ -283,13 +285,31 @@ print(response.body);
     pref.setString('code', code);
 
   
-    String url = 'https://apgloballimited.com/api/users/resetpassword/$email/$code';
+    String url = baseUrl+'api/users/resetpassword/$email/$code';
     http.Response response = await http.get(url);
 
     print(response.statusCode);
     print(response.body);
 
     return response.body;
+  }
+
+  static Future<Map<String, dynamic>> getSubscription() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String token = pref.getString('token');
+    Map<String, dynamic> map  = Map<String, dynamic>();
+
+    String url = baseUrl+'api/billing/getSunscription';
+    http.Response response = await http.get(url, headers: {HttpHeaders.authorizationHeader: "Bearer $token", "Content-Type": "application/json"});
+
+    print(response.statusCode);
+    print(response.body);
+
+    if(response.statusCode == 200) {
+      map = json.decode(response.body);
+    }
+
+    return map;
   }
 
   static base64String(String string){
@@ -299,11 +319,10 @@ print(response.body);
   }
 
   static Future<String> payForSubscription(Map<String, dynamic> map) async {
-    String url = 'https://apgloballimited.com/api/billing/makeSubscription';
+    String url = baseUrl+'api/billing/makeSubscription';
 
     SharedPreferences pref = await SharedPreferences.getInstance();
     String token = pref.getString('token');
-
 
 
     http.Response response = await http.post(url, body: json.encode(map), headers: {HttpHeaders.authorizationHeader: "Bearer $token", "Content-Type": "application/json"},);
@@ -313,5 +332,6 @@ print(response.body);
     return response.body;
 
   }
+
 
 }

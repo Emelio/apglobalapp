@@ -55,6 +55,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_spinkit:
+    dependency: "direct main"
+    description:
+      name: flutter_spinkit
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.1.0"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -63,10 +70,12 @@ packages:
   geocoder:
     dependency: "direct main"
     description:
-      name: geocoder
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.1.2"
+      path: "."
+      ref: bc34cfe473bfd1934fe098bb7053248b75200241
+      resolved-ref: bc34cfe473bfd1934fe098bb7053248b75200241
+      url: "https://github.com/Eimji/flutter_geocoder.git"
+    source: git
+    version: "0.1.1"
   google_maps_flutter:
     dependency: "direct main"
     description:

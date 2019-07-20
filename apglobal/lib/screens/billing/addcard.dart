@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:apglobal/service/communicator.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class AddCard extends StatefulWidget {
   State<AddCard> createState() => AddCardState();
@@ -14,6 +15,7 @@ class AddCardState extends State<AddCard> {
   TextEditingController name = TextEditingController();
   TextEditingController dateis = TextEditingController();
   TextEditingController cvv = TextEditingController();
+  String status = '';
 
 
   TextfieldObject(String label, TextEditingController controllers) {
@@ -30,6 +32,35 @@ class AddCardState extends State<AddCard> {
           labelText: '$label',
         ),
       ),
+    );
+  }
+
+  void _showDialog(String message) {
+    // flutter defined function
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return Container(
+          height: 200,
+          child: AlertDialog(
+              content: Container(
+                height: 200,
+                child: Column(
+                  children: <Widget>[
+                    Text("Please wait wil transaction processes", textAlign: TextAlign.center,),
+                    Text("$message", style: TextStyle(color: Colors.red),),
+                    SpinKitRipple(
+                      color: Colors.blue,
+                      size: 50.0,
+                    ),
+//                    RaisedButton(onPressed: () => Navigator.pop(context), child: Text("Edit Information"),)
+                  ],
+                ),
+              )
+          ),
+        );
+      },
     );
   }
 
@@ -52,7 +83,7 @@ class AddCardState extends State<AddCard> {
               child: Text('Add Card', style: TextStyle(color: Colors.white),),
               onPressed: () async {
 
-                
+                _showDialog(status);
 
                 Map<String, dynamic> paymentInfo = Map<String, dynamic>();
 
@@ -68,6 +99,12 @@ class AddCardState extends State<AddCard> {
 
                 if(paymentData['finalStatus'] == 'success'){
                    Navigator.popAndPushNamed(context, 'managecard');
+                }else{
+                  print(paymentData);
+                  setState(() {
+                    status = paymentData['message'];
+                  });
+                  _showDialog(paymentData['message']);
                 }
 
                 

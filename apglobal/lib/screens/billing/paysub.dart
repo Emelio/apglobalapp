@@ -6,6 +6,7 @@ import 'dart:convert';
 
 import 'package:apglobal/service/communicator.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class PaySub extends StatefulWidget {
@@ -68,11 +69,41 @@ getCards() async {
     );
   }
 
+
+  void _showDialog(String message) {
+    // flutter defined function
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return Container(
+          height: 200,
+          child: AlertDialog(
+              content: Container(
+                height: 200,
+                child: Column(
+                  children: <Widget>[
+                    Text("Please wait wil transaction processes", textAlign: TextAlign.center,),
+                    Text("$message", style: TextStyle(color: Colors.red),),
+                    SpinKitRipple(
+                      color: Colors.blue,
+                      size: 50.0,
+                    ),
+//                    RaisedButton(onPressed: () => Navigator.pop(context), child: Text("Edit Information"),)
+                  ],
+                ),
+              )
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
-      appBar: AppBar(title: Text("Payment"),),
+      appBar: AppBar(title: Text("Payment"), centerTitle: true,),
       body: ListView(
         
         children: <Widget>[
@@ -107,6 +138,9 @@ getCards() async {
             child: RaisedButton(
               child: Text('Pay Now', style: TextStyle(color: Colors.white),),
               onPressed: () async {
+
+                _showDialog(status);
+
                 Map<String, dynamic> paymentInfo = Map<String, dynamic>();
 
                 setState(() {
@@ -131,10 +165,11 @@ getCards() async {
                 if(paymentData['finalStatus'] == 'success'){
                   Navigator.popAndPushNamed(context, 'billing');
                 }else{
-                  print(paymentData['finalStatus']);
+                  print(paymentData);
                   setState(() {
                     status = paymentData['message'];
                   });
+                  _showDialog(paymentData['message']);
                 }
 
 

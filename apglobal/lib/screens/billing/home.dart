@@ -1,6 +1,9 @@
 
+import 'dart:convert';
+
 import 'package:apglobal/service/communicator.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class BillingHome extends StatefulWidget {
   State<BillingHome> createState() => BillingHomeState();
@@ -8,15 +11,44 @@ class BillingHome extends StatefulWidget {
 
 class BillingHomeState extends State<BillingHome> {
 
-  String subscriptionNote; 
+  String subscriptionNote = '';
 
-  BillingHomeState() 
-  {
-    Communicator.subscription().then((result){
-      if(result['Type'] == 'PayAsYouGo') {
-        subscriptionNote = 'You have ${result['commands']} remaining';
+
+  BillingHomeState() {
+    Communicator.getSubscription().then((result){
+      print(result['type']);
+      var subscriptionNot;
+      if(result['type'] == 'PayAsYouGo') {
+        print(result['Type']);
+        subscriptionNot = 'Commands remaining: ${result['commands']}';
       }else if(result['Type'] == 'Unlimited') {
-        subscriptionNote = 'Expires on ${result['expirationDate']} remaining';
+        subscriptionNot = 'Expires on ${result['expirationDate']}';
+      }
+
+      setState(() {
+        subscriptionNote = subscriptionNot;
+
+      });
+
+    });
+  }
+
+  @override
+  initState() {
+    super.initState();
+    // Add listeners to this class
+    SharedPreferences.getInstance().then((result){
+      try{
+        Map<String, dynamic> sub = json.decode(result.getString('subs'));
+
+        if(sub['type'] == 'PayAsYouGo'){
+          subscriptionNote = 'Commands remaining: ${sub['commands']}';
+        }else{
+          subscriptionNote = 'Expires on ${sub['expirationDate']}';
+        }
+
+      } catch(e) {
+//        Navigator.pushNamedAndRemoveUntil(context, 'billing', (Route<dynamic> route) => false);
       }
     });
   }
@@ -35,7 +67,7 @@ class BillingHomeState extends State<BillingHome> {
             break;
 
           case 'subscription':
-            return Navigator.pushNamed(context, 'subscription');
+            Navigator.pushNamed(context, 'subscription');
             break;
 
           default:
@@ -57,6 +89,8 @@ class BillingHomeState extends State<BillingHome> {
 
   @override
   Widget build(BuildContext context) {
+
+
     // TODO: implement build
     return Scaffold(
         appBar: AppBar(title: Text('BILLING', style: TextStyle(fontSize: 22),), centerTitle: true,

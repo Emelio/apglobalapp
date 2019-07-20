@@ -33,9 +33,7 @@ class Homestate extends State<Home> {
 
     getDevice(_scaffoldKey.currentContext);
 
-    
     SharedPreferences.getInstance().then((result) async {
-
       var device = await Communicator.getDevice();
       var _device;
 
@@ -45,27 +43,15 @@ class Homestate extends State<Home> {
          _device = json.decode(result.getString('device'));
       }
 
-      
-      
-
       try{
         _device = json.decode(device);
-        print(_device);
       } on NoSuchMethodError {
-
         getNewData();
-
       }
-
-      
-
       var image;
       var powerStringtemp;
-      var placeHolder;
 
     setState(()  {
-       
-      
 
     var carState = _device['status']['arm'];
       
@@ -83,7 +69,7 @@ class Homestate extends State<Home> {
 
     print(carState);
 
-       brand = _device['brand'] + " " + _device['model'] + " " + _device['year']; 
+       brand = _device['brand'] + " " + _device['model'] + " " + _device['year'];
        deviceNumber = _device['device'];
        arm = _device['status']['arm'];
       monitor = _device['status']['monitor'];
@@ -111,8 +97,11 @@ class Homestate extends State<Home> {
   }
 
   getNewData() async {
+
+
+
     var device = await Communicator.getDevice();
-    print(device);
+
 
     var _device = json.decode(device);
 
@@ -136,7 +125,6 @@ class Homestate extends State<Home> {
         powerStringtemp = 'Kill switch deactivated';
       }
 
-      print(carState);
 
       brand = _device['brand'] + " " + _device['model'] + " " + _device['year'];
       deviceNumber = _device['device'];
@@ -153,8 +141,60 @@ class Homestate extends State<Home> {
     return device;
   }
 
-  getDevice(BuildContext context) async {
+  checkSub(Map<String, dynamic> subs) async {
     SharedPreferences pref = await SharedPreferences.getInstance();
+    // check live server
+    if(subs['type'] == 'PayAsYouGo'){
+      pref.setString('subs', json.encode(subs));
+
+      if (subs['commands'] < 0){
+        Navigator.pushNamedAndRemoveUntil(context, 'billing', (Route<dynamic> route) => false);
+      }
+
+    } else if(subs['type'] == 'Unlimited'){
+
+      var time = DateTime.parse(subs['expirationDate']).millisecondsSinceEpoch;
+      var now = DateTime.now().millisecondsSinceEpoch;
+
+      if(now > time) {
+        Navigator.pushNamedAndRemoveUntil(context, 'billing', (Route<dynamic> route) => false);
+      }
+
+    }
+
+
+    // check local
+    try{
+      Map<String, dynamic> sub = json.decode(pref.getString('subs'));
+
+      if(sub['type'] == 'PayAsYouGo'){
+
+        if (subs['commands'] < 0){
+          Navigator.pushNamedAndRemoveUntil(context, 'billing', (Route<dynamic> route) => false);
+        }
+
+      }else{
+        var time = DateTime.parse(subs['expirationDate']).millisecondsSinceEpoch;
+        var now = DateTime.now().millisecondsSinceEpoch;
+
+        if(now > time) {
+          Navigator.pushNamedAndRemoveUntil(context, 'billing', (Route<dynamic> route) => false);
+        }
+      }
+
+    } catch(e) {
+      Navigator.pushNamedAndRemoveUntil(context, 'billing', (Route<dynamic> route) => false);
+    }
+  }
+
+  getDevice(BuildContext context) async {
+
+    Map<String, dynamic> subs = await Communicator.getSubscription();
+    SharedPreferences pref = await SharedPreferences.getInstance();
+
+    checkSub(subs);
+
+    // check if the user is a pay as you go or unlimited
     String token = pref.getString('token'); 
     List<String> tokens = token.split('.');
 
@@ -205,12 +245,12 @@ class Homestate extends State<Home> {
           double longi ;
 
           if(catcheTime > liveTime){
-            print(trackingLocalData);
+
 
            // lat = double.parse(trackingLocalData['Lat']);
            // longi = double.parse(trackingLocalData['Longi']);
           }else{
-            print(result);
+
 
             lat = result['lat'];
             longi = result['longi'];
@@ -221,10 +261,9 @@ class Homestate extends State<Home> {
           if(lat != null){
             // From coordinates
             final coordinates = new Coordinates(lat, longi);
-            var addresses = await Geocoder.google("AIzaSyD9QV-Hdz5bxRAiE1goVUiMsbHF039q_N0").findAddressesFromCoordinates(coordinates);;
+            var addresses = await Geocoder.local.findAddressesFromCoordinates(coordinates);
             var first = addresses.first;
             placeHolder = first.addressLine;
-            print(first.addressLine);
           }else{
             placeHolder = "no location data";
           }
@@ -245,10 +284,9 @@ class Homestate extends State<Home> {
         if(lat != null){
           // From coordinates
           final coordinates = new Coordinates(lat, longi);
-          var addresses = await Geocoder.google("AIzaSyD9QV-Hdz5bxRAiE1goVUiMsbHF039q_N0").findAddressesFromCoordinates(coordinates);
+          var addresses = await Geocoder.local.findAddressesFromCoordinates(coordinates);
           var first = addresses.first;
           placeHolder = first.addressLine;
-          print(first.addressLine);
         }else{
           placeHolder = "no location data";
         }
