@@ -52,13 +52,16 @@ class QuickStopState extends State<QuickStop> {
     });
   }
 
-  activateSpeed() async {
+  activateSpeed(String quickstop) async {
     SharedPreferences pref = await SharedPreferences.getInstance();
 
     var device = pref.getString('device');
     var _device = json.decode(device);
 
-    print(_device['status']['quickStop']);
+    _device['status']['quickStop'] = quickstop;
+
+    var newData = json.encode(_device);
+    pref.setString('device', newData);
 
     setState(() {
       // brand = _device[0]['brand'] + " " + _device[0]['model'] + " " + _device[0]['year'];
@@ -86,7 +89,7 @@ class QuickStopState extends State<QuickStop> {
                 RaisedButton(
                   child: Text(buttonValue),
                   onPressed: () async {
-                    await activateSpeed();
+
 
                     SharedPreferences pref = await SharedPreferences.getInstance();
 
@@ -99,6 +102,7 @@ class QuickStopState extends State<QuickStop> {
                     print(address);
 
                     if (quickStop == "off") {
+                      await activateSpeed('on');
                       message = new SmsMessage(address, 'quickstop$password');
 
                       Communicator.updateStatus('quickStop', 'on', deviceId);
@@ -108,6 +112,7 @@ class QuickStopState extends State<QuickStop> {
 
 
                     }else{
+                      await activateSpeed('off');
                       message = new SmsMessage(address, 'noquickstop$password');
                       Communicator.updateStatus('quickStop', 'off', deviceId);
                       setState(() {

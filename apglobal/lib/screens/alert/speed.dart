@@ -58,16 +58,19 @@ class SpeedState extends State<Speed> {
     });
   }
 
-  activateSpeed() async {
+  activateSpeed(String speed) async {
     SharedPreferences pref = await SharedPreferences.getInstance();
 
     var device = pref.getString('device');
     var _device = json.decode(device);
 
-    print(_device['status']['overspeed']);
+    _device['status']['overspeed'] = speed;
+
+    var newData = json.encode(_device);
+    pref.setString('device', newData);
 
     setState(() {
-      // brand = _device[0]['brand'] + " " + _device[0]['model'] + " " + _device[0]['year']; 
+      // brand = _device[0]['brand'] + " " + _device[0]['model'] + " " + _device[0]['year'];
       deviceNumber = _device['device'];
       overspeed = _device['status']['overspeed'];
       password = _device['password'];
@@ -108,18 +111,17 @@ class SpeedState extends State<Speed> {
               RaisedButton(
                 child: Text(buttonValue),
                 onPressed: () async {
-                  await activateSpeed();
+
 
                   SharedPreferences pref = await SharedPreferences.getInstance();
                   
                   SmsQuery query = new SmsQuery();
                   SmsSender sender = new SmsSender();
                   String address = "${deviceNumber.toStringAsFixed(0)}";
-                  SmsMessage message; 
-
-                  print(overspeed);
+                  SmsMessage message;
 
                   if (overspeed == "off") {
+                    await activateSpeed('on');
                     message = new SmsMessage(address, 'speed$password ${speed.text}');
                     pref.setString('overSpeedAmount', speed.text);
                     Communicator.updateStatus('speed', 'on', deviceId); 
@@ -129,6 +131,7 @@ class SpeedState extends State<Speed> {
 
                     
                   }else{
+                    await activateSpeed('off');
                     message = new SmsMessage(address, 'nospeed$password');
                     Communicator.updateStatus('speed', 'off', deviceId);
                     setState(() {

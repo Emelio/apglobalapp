@@ -312,6 +312,17 @@ print(response.body);
     return map;
   }
 
+  static Future<String> updateCommands() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String token = pref.getString('token');
+
+    String url = baseUrl+'api/billing/updateSub';
+    http.Response response = await http.get(url, headers: {HttpHeaders.authorizationHeader: "Bearer $token", "Content-Type": "application/json"});
+
+
+
+  }
+
   static base64String(String string){
     var bytes = utf8.encode(string);
     var base64Str = base64.encode(bytes);

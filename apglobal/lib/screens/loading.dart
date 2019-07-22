@@ -29,9 +29,7 @@ class LoadingScreenExampleState extends State<LoadingScreenExample> {
 
       if (devicePhone.toStringAsFixed(0).contains(msg.sender.substring(2))) {
 
-
         String bodyData = msg.body.toLowerCase();
-        
         
         if (bodyData.contains('tracker is activated')) {
           
@@ -92,6 +90,8 @@ class LoadingScreenExampleState extends State<LoadingScreenExample> {
           Navigator.popAndPushNamed(context, 'maps');
 
         }else if(bodyData.contains("speed ok!") || bodyData.contains("quickstop OK") || bodyData.contains("noquickstop OK") || bodyData.contains("move OK")){
+
+          
           Navigator.pop(context);
         }else if(bodyData.contains("stop engine succeed")){
 
@@ -108,7 +108,13 @@ class LoadingScreenExampleState extends State<LoadingScreenExample> {
           Navigator.popAndPushNamed(context, 'home');
         }
 
-        
+        var sub = json.decode(pref.getString('subs'));
+        if(sub['type'] == 'PayAsYouGo'){
+          sub['commands'] = sub['commands'] - 1;
+
+          pref.setString('subs', json.encode(sub));
+          Communicator.updateCommands();
+        }
         
       }else{
         print(msg.sender);
