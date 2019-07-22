@@ -294,7 +294,7 @@ print(response.body);
     return response.body;
   }
 
-  static Future<Map<String, dynamic>> getSubscription() async {
+  static Future<Map<String, dynamic>> getSubscription(BuildContext context) async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     String token = pref.getString('token');
     Map<String, dynamic> map  = Map<String, dynamic>();
@@ -307,6 +307,10 @@ print(response.body);
 
     if(response.statusCode == 200) {
       map = json.decode(response.body);
+    }
+
+    if(response.statusCode == 401){
+      Navigator.pushNamedAndRemoveUntil(context, 'login', (Route<dynamic> route) => false);
     }
 
     return map;

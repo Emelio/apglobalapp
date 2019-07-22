@@ -189,7 +189,7 @@ class Homestate extends State<Home> {
 
   getDevice(BuildContext context) async {
 
-    Map<String, dynamic> subs = await Communicator.getSubscription();
+    Map<String, dynamic> subs = await Communicator.getSubscription(context);
     SharedPreferences pref = await SharedPreferences.getInstance();
 
     checkSub(subs);

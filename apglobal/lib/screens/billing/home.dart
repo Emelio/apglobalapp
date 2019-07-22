@@ -15,7 +15,7 @@ class BillingHomeState extends State<BillingHome> {
 
 
   BillingHomeState() {
-    Communicator.getSubscription().then((result){
+    Communicator.getSubscription(context).then((result){
       print(result['type']);
       var subscriptionNot;
       if(result['type'] == 'PayAsYouGo') {
