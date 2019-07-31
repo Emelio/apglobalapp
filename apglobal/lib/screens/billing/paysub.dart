@@ -169,7 +169,8 @@ getCards() async {
                   setState(() {
                     status = paymentData['message'];
                   });
-                  _showDialog(paymentData['message']);
+//                  _showDialog(paymentData['message']);
+                Navigator.pop(context);
                 }
 
 
