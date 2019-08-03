@@ -89,7 +89,7 @@ class LoadingScreenExampleState extends State<LoadingScreenExample> {
 
           Navigator.popAndPushNamed(context, 'maps');
 
-        }else if(bodyData.contains("speed ok!") || bodyData.contains("quickstop ok") || bodyData.contains("noquickstop ok") || bodyData.contains("move ok")){
+        }else if(bodyData.contains("speed ok!") || bodyData.contains("quickstop ok!") || bodyData.contains("noquickstop ok!") || bodyData.contains("move ok") || bodyData.contains("nomove ok")){
 
           
           Navigator.pop(context);
