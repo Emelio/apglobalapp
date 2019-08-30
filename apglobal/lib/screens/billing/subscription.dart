@@ -44,10 +44,10 @@ class SubscriptionState extends State<Subscription> {
                   children: <Widget>[
                     Padding(
                       padding: EdgeInsets.all(10),
-                      child: buttons('\$2500', '300 Commands', 'P1'),),
+                      child: buttons('\$500', '70 Commands', 'P1'),),
                     Padding(
                         padding: EdgeInsets.all(10),
-                        child: buttons('\$5000', '600 Commands', 'P2'),
+                        child: buttons('\$700', '110 Commands', 'P2'),
                       ),
                     
                   ],
@@ -57,18 +57,7 @@ class SubscriptionState extends State<Subscription> {
                   children: <Widget>[
                      Padding(
                       padding: EdgeInsets.all(10),
-                      child: buttons('\$7500', '900 Commands', 'P3'),
-                    ),
-                    GestureDetector(
-                      onTap: () async {
-                        SharedPreferences pref = await SharedPreferences.getInstance();
-                        pref.setString('subType', 'P4');
-                        Navigator.pushNamed(context, 'paySub');
-                      },
-                      child: Padding(
-                        padding: EdgeInsets.all(10),
-                        child: buttons('\$10,000', '1200 Commands', 'P4'),
-                      ),
+                      child: buttons('\$1000', '155 Commands', 'P3'),
                     ),
                     
                   ],
@@ -76,30 +65,15 @@ class SubscriptionState extends State<Subscription> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
-                     Padding(
-                          padding: EdgeInsets.all(10),
-                          child: buttons('\$1,500', 'Unlimited for one month', 'U1'),
-                        ),
+
                     Padding(
                       padding: EdgeInsets.all(10),
-                      child: buttons('\$4,500', 'Unlimited for three months', 'U2'),
+                      child: buttons('\$1,800', 'Unlimited for one months', 'U2'),
                     ),
                     
                   ],),
 
-                  Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: <Widget>[
-                     Padding(
-                          padding: EdgeInsets.all(10),
-                          child: buttons('\$9,000', 'Unlimited for six months', 'U3'),
-                        ),
-                    Padding(
-                      padding: EdgeInsets.all(10),
-                      child: buttons('\$13,500', 'Unlimited for nine months', 'U4'),
-                    ),
-                    
-                  ],)
+
                 
               ],
             ),
